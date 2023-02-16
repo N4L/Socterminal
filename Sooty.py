@@ -408,31 +408,27 @@ def repChecker():
         f.write("\n VirusTotal Report:")
         f.write("\n --------------------------------- \n")
 
-        url = 'https://www.virustotal.com/vtapi/v2/url/report'
-        params = {'apikey': configvars.data['VT_API_KEY'], 'resource': wIP}
+        url = 'https://www.virustotal.com/vtapi/v2/ip-address/report'
+        #params = {'apikey': configvars.data['VT_API_KEY'], 'resource': wIP}
+        params = {'apikey':configvars.data['VT_API_KEY'],'ip':ip}
         response = requests.get(url, params=params)
-        pos = 0 # Total positives found in VT
-        tot = 0 # Total number of scans
         if response.status_code == 200:
-            try:
-                result = response.json()
-                for each in result:
-                    tot = result['total']
-                    if result['positives'] != 0:
-                        pos = pos +1
-                avg = pos/tot
-                print("   No of Databases Checked: " + str(tot))
-                print("   No of Reportings: " + str(pos))
-                print("   Average Score:    " + str(avg))
-                print("   VirusTotal Report Link: " + result['permalink'])
-                f.write("\n\n No of Databases Checked: " + str(tot))
-                f.write("\n No of Reportings: " + str(pos))
-                f.write("\n Average Score: " + str(avg))
-                f.write("\n VirusTotal Report Link: " + result['permalink'])
-            except:
-                print('error')
+            report = response.json()
+            if report["response_code"] == 1:
+                detected_urls = report.get("detected_urls", [])
+                if not detected_urls:
+                    print(f"{ip} has not been reported for malicious activity.")
+                else:
+                    print(f"{ip} has been reported for malicious activity by {len(detected_urls)} sources.")
+                    for url in detected_urls:
+                        print(f"{url['url']} - {url['positives']}/{url['total']} antivirus programs detected this threat.")
+                pretty_report = json.dumps(report, indent=4)
+                print(pretty_report)
+                f.write(pretty_report)          
+            else:
+                print(f"Error: {report['verbose_msg']}")
         else:
-            print(" There's been an error, check your API Key or VirusTotal may be down")
+            print(f"Error: {response.status_code} {response.reason}")
 
     try:
         TOR_URL = "https://check.torproject.org/cgi-bin/TorBulkExitList.py?ip=1.1.1.1"
@@ -464,66 +460,66 @@ def repChecker():
     f.write("\n BadIP's Report : ")
     f.write("\n --------------------------------- \n")
 
-    try:
-        BAD_IPS_URL = 'https://www.badips.com/get/info/' + wIP
-        response = requests.get(BAD_IPS_URL)
-        if response.status_code == 200:
-            result = response.json()
-            print("  " + str(result['suc']))
-            print("  Total Reports : " + str(result['ReporterCount']['sum']))
-            print("\n  IP has been reported in the following Categories:")
-            f.write("  " + str(result['suc']))
-            f.write("\n  Total Reports : " + str(result['ReporterCount']['sum']))
-            f.write("\n  IP has been reported in the following Categories:")
-            for each in result['LastReport']:
-                timeReport = datetime.fromtimestamp(result['LastReport'].get(each))
-                print('   - ' + each + ': ' + str(timeReport))
-                f.write('\n   - ' + each + ': ' + str(timeReport))
-        else:
-            print('  Error reaching BadIPs')
-    except:
-        print('  IP not found') #Defaults to IP not found - not actually accurate
-        f.write('\n  IP not found')
+#    try:
+#        BAD_IPS_URL = 'https://www.badips.com/get/info/' + wIP
+#        response = requests.get(BAD_IPS_URL)
+#        if response.status_code == 200:
+#            result = response.json()
+#            print("  " + str(result['suc']))
+#            print("  Total Reports : " + str(result['ReporterCount']['sum']))
+#            print("\n  IP has been reported in the following Categories:")
+#            f.write("  " + str(result['suc']))
+#            f.write("\n  Total Reports : " + str(result['ReporterCount']['sum']))
+#            f.write("\n  IP has been reported in the following Categories:")
+#            for each in result['LastReport']:
+#                timeReport = datetime.fromtimestamp(result['LastReport'].get(each))
+#                print('   - ' + each + ': ' + str(timeReport))
+#                f.write('\n   - ' + each + ': ' + str(timeReport))
+#        else:
+#            print('  Error reaching BadIPs')
+#    except:
+#        print('  IP not found') #Defaults to IP not found - not actually accurate
+#        f.write('\n  IP not found')
 
-    print("\n ABUSEIPDB Report:")
-    f.write("\n\n ---------------------------------")
-    f.write("\n ABUSEIPDB Report:")
-    f.write("\n ---------------------------------\n")
-
-    try:
-        AB_URL = 'https://api.abuseipdb.com/api/v2/check'
-        days = '180'
-
-        querystring = {
-            'ipAddress': wIP,
-            'maxAgeInDays': days
-        }
-
-        headers = {
-            'Accept': 'application/json',
-            'Key': configvars.data['AB_API_KEY']
-        }
-        response = requests.request(method='GET', url=AB_URL, headers=headers, params=querystring)
-        if response.status_code == 200:
-            req = response.json()
-
-            print("   IP:          " + str(req['data']['ipAddress']))
-            print("   Reports:     " + str(req['data']['totalReports']))
-            print("   Abuse Score: " + str(req['data']['abuseConfidenceScore']) + "%")
-            print("   Last Report: " + str(req['data']['lastReportedAt']))
-            f.write("\n\n IP:        " + str(req['data']['ipAddress']))
-            f.write("\n Reports:     " + str(req['data']['totalReports']))
-            f.write("\n Abuse Score: " + str(req['data']['abuseConfidenceScore']) + "%")
-            f.write("\n Last Report: " + str(req['data']['lastReportedAt']))
-            f.close()
-
-        else:
-            print("   Error Reaching ABUSE IPDB")
-    except:
-        print('   IP Not Found')
-
-    print("\n\nChecking against IP blacklists: ")
-    iplists.main(rawInput)
+#    print("\n ABUSEIPDB Report:")
+#    f.write("\n\n ---------------------------------")
+#    f.write("\n ABUSEIPDB Report:")
+#    f.write("\n ---------------------------------\n")
+#
+#    try:
+#        AB_URL = 'https://api.abuseipdb.com/api/v2/check'
+#        days = '180'
+#
+#        querystring = {
+#            'ipAddress': wIP,
+#            'maxAgeInDays': days
+#        }
+#
+#        headers = {
+#            'Accept': 'application/json',
+#            'Key': configvars.data['AB_API_KEY']
+#        }
+#        response = requests.request(method='GET', url=AB_URL, headers=headers, params=querystring)
+#        if response.status_code == 200:
+#            req = response.json()
+#
+#            print("   IP:          " + str(req['data']['ipAddress']))
+#            print("   Reports:     " + str(req['data']['totalReports']))
+#            print("   Abuse Score: " + str(req['data']['abuseConfidenceScore']) + "%")
+#            print("   Last Report: " + str(req['data']['lastReportedAt']))
+#            f.write("\n\n IP:        " + str(req['data']['ipAddress']))
+#            f.write("\n Reports:     " + str(req['data']['totalReports']))
+#            f.write("\n Abuse Score: " + str(req['data']['abuseConfidenceScore']) + "%")
+#            f.write("\n Last Report: " + str(req['data']['lastReportedAt']))
+#            f.close()
+#
+#        else:
+#            print("   Error Reaching ABUSE IPDB")
+#    except:
+#        print('   IP Not Found')
+#
+#    print("\n\nChecking against IP blacklists: ")
+#    iplists.main(rawInput)
 
     mainMenu()
 

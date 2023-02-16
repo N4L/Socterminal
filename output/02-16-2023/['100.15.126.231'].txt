@@ -1,0 +1,42 @@
+
+ --------------------------------- 
+ VirusTotal Report:
+ --------------------------------- 
+{
+    "asn": 701,
+    "undetected_urls": [],
+    "country": "US",
+    "response_code": 1,
+    "as_owner": "UUNET",
+    "verbose_msg": "IP address in dataset",
+    "detected_urls": [
+        {
+            "url": "https://100.15.126.231/",
+            "positives": 1,
+            "total": 90,
+            "scan_date": "2023-02-12 01:00:47"
+        },
+        {
+            "url": "http://100.15.126.231/",
+            "positives": 1,
+            "total": 90,
+            "scan_date": "2023-01-13 01:00:43"
+        }
+    ],
+    "resolutions": [
+        {
+            "last_resolved": "2023-01-12 12:04:20",
+            "hostname": "dnsseed.bluematt.me"
+        }
+    ]
+}
+
+ --------------------------------- 
+ TOR Exit Node Report: 
+ --------------------------------- 
+
+ 100.15.126.231 is NOT a TOR Exit Node
+
+ ---------------------------------
+ BadIP's Report : 
+ --------------------------------- 
