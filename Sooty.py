@@ -177,9 +177,9 @@ def titleLogo():
     os.system('cls||clear')
 
 def mainMenu():
-    print("\n --------------------------------- ")
-    print("\n           S  O  O  T  Y           ")
-    print("\n --------------------------------- ")
+    print("\n ---------------------------------------------- ")
+    print("\n           S  O  C - T  E R M I N A L           ")
+    print("\n ---------------------------------------------- ")
     print(" What would you like to do? ")
     print("\n OPTION 1: Sanitise URL For emails ")
     print(" OPTION 2: Decoders (PP, URL, SafeLinks) ")
