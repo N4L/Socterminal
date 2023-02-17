@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-    Title:      Sooty
+    Title:      SocTerminal
     Desc:       The SOC Analysts all-in-one CLI tool to automate and speed up workflow.
-    Author:     Connor Jackson
-    Version:    1.3.2
-    GitHub URL: https://github.com/TheresAFewConors/Sooty
+    Author:     Akshay Nehate
+    Version:    0.1.1
+    GitHub URL: https://github.com/akshay-nehate/Socterminal
 """
 
 import base64
@@ -23,6 +23,8 @@ import requests
 from ipwhois import IPWhois
 import tkinter
 import sys
+import whois
+from pprint import pprint
 
 from Modules import iplists
 from Modules import phishtank
@@ -384,24 +386,28 @@ def repChecker():
     print("\n --------------------------------- ")
     print(" R E P U T A T I O N     C H E C K ")
     print(" --------------------------------- ")
-    rawInput = input("Enter IP, URL or Email Address: ").split()
-    ip = str(rawInput[0])
-
-    s = re.findall(r'\S+@\S+', ip)
-    if s:
-        print(' Email Detected...')
-        analyzeEmail(''.join(s))
-    else:
-
-        whoIsPrint(ip)
-        wIP = socket.gethostbyname(ip)
+    # Prompt the user to enter an input string
+    input_str = input("Enter an IP address, URL, or email address: ")
+    # Define regular expressions for detecting IP addresses, URLs, and email addresses
+    ip_pattern = re.compile(r'\b(?:\d{1,3}\.){3}\d{1,3}\b')
+    url_pattern = re.compile(r'https?://\S+')
+    email_pattern = re.compile(r'\S+@\S+\.\S+')
+    # Check if the input matches any of the patterns
+    if ip_pattern.match(input_str):
+        ipw = re.search(r'\b(?:\d{1,3}\.){3}\d{1,3}\b', input_str).group(0)
+        # Print the detected input type
+        print("Detected input type:", ipw)
+        obj = IPWhois(ipw).lookup_rdap(asn_methods=['dns', 'whois', 'http'])
+        pprint(obj)
+        #
+        whoIsPrint(ipw)
+        wIP = socket.gethostbyname(ipw)
         now = datetime.now()
-
         today = now.strftime("%m-%d-%Y")
 
         if not os.path.exists('output/'+today):
             os.makedirs('output/'+today)
-        f= open('output/'+today+'/'+str(rawInput) + ".txt","a+")
+        f= open('output/'+today+'/'+str(ipw) + ".txt","a+")
 
         print("\n VirusTotal Report:")
         f.write("\n --------------------------------- ")
@@ -410,16 +416,16 @@ def repChecker():
 
         url = 'https://www.virustotal.com/vtapi/v2/ip-address/report'
         #params = {'apikey': configvars.data['VT_API_KEY'], 'resource': wIP}
-        params = {'apikey':configvars.data['VT_API_KEY'],'ip':ip}
+        params = {'apikey':configvars.data['VT_API_KEY'],'ip':ipw}
         response = requests.get(url, params=params)
         if response.status_code == 200:
             report = response.json()
             if report["response_code"] == 1:
                 detected_urls = report.get("detected_urls", [])
                 if not detected_urls:
-                    print(f"{ip} has not been reported for malicious activity.")
+                    print(f"{ipw} has not been reported for malicious activity.")
                 else:
-                    print(f"{ip} has been reported for malicious activity by {len(detected_urls)} sources.")
+                    print(f"{ipw} has been reported for malicious activity by {len(detected_urls)} sources.")
                     for url in detected_urls:
                         print(f"{url['url']} - {url['positives']}/{url['total']} antivirus programs detected this threat.")
                 pretty_report = json.dumps(report, indent=4)
@@ -430,98 +436,74 @@ def repChecker():
         else:
             print(f"Error: {response.status_code} {response.reason}")
 
-    try:
-        TOR_URL = "https://check.torproject.org/cgi-bin/TorBulkExitList.py?ip=1.1.1.1"
-        req = requests.get(TOR_URL)
-        print("\n TOR Exit Node Report: ")
-        f.write("\n\n --------------------------------- ")
-        f.write("\n TOR Exit Node Report: ")
-        f.write("\n --------------------------------- \n")
-        if req.status_code == 200:
-            tl = req.text.split('\n')
-            c = 0
-            for i in tl:
-                if wIP == i:
-                    print("  " + i + " is a TOR Exit Node")
-                    f.write("\n " + "  " + i + " is a TOR Exit Node")
-                    c = c+1
-            if c == 0:
-                print("  " + wIP + " is NOT a TOR Exit Node")
-                f.write("\n " + wIP + " is NOT a TOR Exit Node")
-        else:
-            print("   TOR LIST UNREACHABLE")
-            f.write("\n TOR LIST UNREACHABLE")
-    except Exception as e:
-        print("There is an error with checking for Tor exit nodes:\n" + str(e))
+        try:
+            url = f"https://check.torproject.org/cgi-bin/TorBulkExitList.py?ip={ipw}"
+            try:
+                response = requests.get(url, timeout=5)
+                if response.status_code == 200 and ipw in response.text:
+                    print(f"{ipw} is a Tor node.")
+                else:
+                    print(f"{ipw} is not a Tor node.")
+            except requests.exceptions.RequestException as e:
+                print(f"An error occurred: {e}")
+        except Exception as e:
+            print("There is an error with checking for Tor exit nodes:\n" + str(e))
 
+        print("\n ABUSEIPDB Report:")
+        f.write("\n\n ---------------------------------")
+        f.write("\n ABUSEIPDB Report:")
+        f.write("\n ---------------------------------\n")
 
-    print("\n Checking BadIP's... ")
-    f.write("\n\n ---------------------------------")
-    f.write("\n BadIP's Report : ")
-    f.write("\n --------------------------------- \n")
+        try:
+            AB_URL = 'https://api.abuseipdb.com/api/v2/check'
+            days = '180'
 
-#    try:
-#        BAD_IPS_URL = 'https://www.badips.com/get/info/' + wIP
-#        response = requests.get(BAD_IPS_URL)
-#        if response.status_code == 200:
-#            result = response.json()
-#            print("  " + str(result['suc']))
-#            print("  Total Reports : " + str(result['ReporterCount']['sum']))
-#            print("\n  IP has been reported in the following Categories:")
-#            f.write("  " + str(result['suc']))
-#            f.write("\n  Total Reports : " + str(result['ReporterCount']['sum']))
-#            f.write("\n  IP has been reported in the following Categories:")
-#            for each in result['LastReport']:
-#                timeReport = datetime.fromtimestamp(result['LastReport'].get(each))
-#                print('   - ' + each + ': ' + str(timeReport))
-#                f.write('\n   - ' + each + ': ' + str(timeReport))
-#        else:
-#            print('  Error reaching BadIPs')
-#    except:
-#        print('  IP not found') #Defaults to IP not found - not actually accurate
-#        f.write('\n  IP not found')
+            querystring = {
+                'ipAddress': wIP,
+                'maxAgeInDays': days
+            }
 
-#    print("\n ABUSEIPDB Report:")
-#    f.write("\n\n ---------------------------------")
-#    f.write("\n ABUSEIPDB Report:")
-#    f.write("\n ---------------------------------\n")
-#
-#    try:
-#        AB_URL = 'https://api.abuseipdb.com/api/v2/check'
-#        days = '180'
-#
-#        querystring = {
-#            'ipAddress': wIP,
-#            'maxAgeInDays': days
-#        }
-#
-#        headers = {
-#            'Accept': 'application/json',
-#            'Key': configvars.data['AB_API_KEY']
-#        }
-#        response = requests.request(method='GET', url=AB_URL, headers=headers, params=querystring)
-#        if response.status_code == 200:
-#            req = response.json()
-#
-#            print("   IP:          " + str(req['data']['ipAddress']))
-#            print("   Reports:     " + str(req['data']['totalReports']))
-#            print("   Abuse Score: " + str(req['data']['abuseConfidenceScore']) + "%")
-#            print("   Last Report: " + str(req['data']['lastReportedAt']))
-#            f.write("\n\n IP:        " + str(req['data']['ipAddress']))
-#            f.write("\n Reports:     " + str(req['data']['totalReports']))
-#            f.write("\n Abuse Score: " + str(req['data']['abuseConfidenceScore']) + "%")
-#            f.write("\n Last Report: " + str(req['data']['lastReportedAt']))
-#            f.close()
-#
-#        else:
-#            print("   Error Reaching ABUSE IPDB")
-#    except:
-#        print('   IP Not Found')
-#
-#    print("\n\nChecking against IP blacklists: ")
-#    iplists.main(rawInput)
+            headers = {
+                'Accept': 'application/json',
+                'Key': configvars.data['AB_API_KEY']
+            }
+            response = requests.request(method='GET', url=AB_URL, headers=headers, params=querystring)
+            if response.status_code == 200:
+                req = response.json()
 
-    mainMenu()
+                print("   IP:          " + str(req['data']['ipAddress']))
+                print("   Reports:     " + str(req['data']['totalReports']))
+                print("   Abuse Score: " + str(req['data']['abuseConfidenceScore']) + "%")
+                print("   Last Report: " + str(req['data']['lastReportedAt']))
+                f.write("\n\n IP:        " + str(req['data']['ipAddress']))
+                f.write("\n Reports:     " + str(req['data']['totalReports']))
+                f.write("\n Abuse Score: " + str(req['data']['abuseConfidenceScore']) + "%")
+                f.write("\n Last Report: " + str(req['data']['lastReportedAt']))
+                f.close()
+
+            else:
+                print("   Error Reaching ABUSE IPDB")
+        except:
+            print('   IP Not Found')
+
+            print("\n\nChecking against IP blacklists: ")
+            iplists.main(ipw)
+            mainMenu()
+        
+    elif url_pattern.match(input_str):
+        domain_name = re.search(r'(?<=://)[\w.-]+', input_str).group(0)
+        # Print the detected input type
+        print("Detected input type:", domain_name)
+        
+    elif email_pattern.match(input_str):
+        email = re.search(r'\S+@\S+\.\S+', input_str).group(0)
+        # Print the detected input type
+        print("Detected input type:", email)
+        
+    else:
+
+        # Print the detected input type
+        print("None valid Detected input type:", input_str)
 
 def dnsMenu():
     print("\n --------------------------------- ")

@@ -1,0 +1,13 @@
+
+ --------------------------------- 
+ VirusTotal Report:
+ --------------------------------- 
+{
+    "detected_urls": [],
+    "asn": 24295,
+    "country": "JP",
+    "response_code": 1,
+    "as_owner": "Internap Japan Co.,Ltd.",
+    "resolutions": [],
+    "verbose_msg": "IP address in dataset"
+}

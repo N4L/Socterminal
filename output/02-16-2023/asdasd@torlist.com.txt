@@ -1,0 +1,49 @@
+
+ --------------------------------- 
+   Email Analysis Report : 
+ ---------------------------------
+   Email:       asdasd@torlist.com
+   Reputation:  medium
+   Suspicious:  True
+   Spotted:     0 Times
+   Blacklisted: False
+   Last Seen:   never
+   Known Spam:  False
+
+ --------------------------------- 
+   Domain Report 
+ --------------------------------- 
+
+   Domain:        @torlist.com
+   Domain Exists: True
+   Domain Rep:    medium
+   Domain Age:    1424 Days
+   New Domain:    False
+   Deliverable:   False
+   Free Provider: False
+   Disposable:    False
+   Spoofable:     True
+
+ --------------------------------- 
+   Malicious Activity Report 
+ --------------------------------- 
+
+   Malicious Activity: False
+   Recent Activity:    False
+   Credentials Leaked: False
+   Found in breach:    False
+
+ --------------------------------- 
+   Profiles Found 
+ --------------------------------- 
+ 
+  No Profiles Found For This User
+
+ --------------------------------- 
+   Summary of Report: 
+ ---------------------------------
+ 
+   Suspicious
+   The domain is valid, but it doesn't have a valid MX record
+   This email address is not deliverable, and the domain has medium reputation
+   

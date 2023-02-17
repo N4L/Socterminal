@@ -1,0 +1,16 @@
+
+ ---------------------------------
+ WHO IS REPORT:
+ ---------------------------------
+
+ CIDR:      103.43.140.0/24
+ Name:      AMALFILLC-JP
+ Range:     103.43.140.0 - 103.43.140.255
+ Descr:     44, Shibokuchi, Takatu-ku
+ Country:   JP
+ State:     None
+ City:      None
+ Address:   44, Shibokuchi, Takatu-ku, Kawasaki-shi Kanagawa 213-0023
+ Post Code: None
+ Created:   None
+ Updated:   None

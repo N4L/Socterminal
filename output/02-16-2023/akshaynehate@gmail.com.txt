@@ -1,0 +1,48 @@
+
+ --------------------------------- 
+   Email Analysis Report : 
+ ---------------------------------
+   Email:       akshaynehate@gmail.com
+   Reputation:  low
+   Suspicious:  False
+   Spotted:     1 Times
+   Blacklisted: False
+   Last Seen:   never
+   Known Spam:  False
+
+ --------------------------------- 
+   Domain Report 
+ --------------------------------- 
+
+   Domain:        @gmail.com
+   Domain Exists: True
+   Domain Rep:    n/a
+   Domain Age:    10048 Days
+   New Domain:    False
+   Deliverable:   True
+   Free Provider: True
+   Disposable:    False
+   Spoofable:     True
+
+ --------------------------------- 
+   Malicious Activity Report 
+ --------------------------------- 
+
+   Malicious Activity: False
+   Recent Activity:    False
+   Credentials Leaked: False
+   Found in breach:    False
+
+ --------------------------------- 
+   Profiles Found 
+ --------------------------------- 
+
+   - twitter
+
+ --------------------------------- 
+   Summary of Report: 
+ ---------------------------------
+ 
+   This email address has been seen in 1 reputable source on the internet, Twitter
+   We've observed no malicious or suspicious activity from this address
+   
