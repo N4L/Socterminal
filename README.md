@@ -13,13 +13,11 @@ SocTerminal is a tool developed with the task of aiding SOC analysts with automa
  - [Roadmap](#roadmap)
  - [Contributors](#contributors)
 
-sooty
 ## SocTerminal can Currently:
   - Sanitise URL's to be safe to send in emails
   - Perform reverse DNS and DNS lookups
   - Perform reputation checks from:
     - [VirusTotal](https://www.virustotal.com)
-##   - [BadIP's](https://www.badips.com/)
     - [Abuse IPDB](https://www.abuseipdb.com/)
   - Identify if an address is potentially malicious, used for spam, web bots:
     - [Botvrij.eu](https://botvrij.eu)
