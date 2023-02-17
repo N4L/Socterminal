@@ -1,21 +1,12 @@
 [![Generic badge](https://img.shields.io/badge/Made%20with-Python-blue.svg?style=flat-square)](https://github.com/akshay-nehate/Socterminal)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-green.svg?style=flat-square)](https://github.com/akshay-nehate/Socterminal)
-[![GitHub contributors](https://img.shields.io/github/contributors/theresafewconors/sooty.svg?style=flat-square)](https://github.com/akshay-nehate/Socterminal/graphs/contributors/)
-[![Generic badge](https://img.shields.io/badge/Built%20For-SOC%20Analyst's-olive.svg?style=flat-square)](https://github.com/akshay-nehate/Socterminal)
-[![HitCount](http://hits.dwyl.io/theresafewconors/sooty.svg)](https://github.com/akshay-nehate/Socterminal)
 ![Docker](https://img.shields.io/badge/Docker-Supported-blue)
-
-
-![](readmeimages/sooty_logo.png)
-[![](readmeimages/tines_banner.png)](https://tines.io?utm_source=github&utm_medium=sponsorship&utm_campaign=sooty)
 # Overview
 
-Sooty is a tool developed with the task of aiding SOC analysts with automating part of their workflow. One of the goals of Sooty is to perform as many of the routine checks as possible, allowing the analyst more time to spend on deeper analysis within the same time-frame. Details for many of Sooty's features can be found below.
-
-Sooty is now proudly supported by [Tines.io](https://tines.io?utm_source=github&utm_medium=sponsorship&utm_campaign=sooty)! The SOAR Platform for Enterprise Security Teams.
+SocTerminal is a tool developed with the task of aiding SOC analysts with automating part of their workflow. One of the goals of SocTerminal is to perform as many of the routine checks as possible, allowing the analyst more time to spend on deeper analysis within the same time-frame. Details for many of SocTerminal's features can be found below.
 
 ## Contents
- - [Current Features](#sooty-can-currently)
+ - [Current Features](#SocTerminal-can-currently)
  - [Requirements & Installation](#requirements-and-installation)
  - [Development](#development)
  - [Changelog](#changelog)
@@ -25,8 +16,8 @@ Sooty is now proudly supported by [Tines.io](https://tines.io?utm_source=github&
  
 ![](readmeimages/repcheck.gif)
 
-
-## Sooty can Currently:
+sooty
+## SocTerminal can Currently:
   - Sanitise URL's to be safe to send in emails
   - Perform reverse DNS and DNS lookups
   - Perform reputation checks from:
@@ -93,7 +84,7 @@ Sooty is now proudly supported by [Tines.io](https://tines.io?utm_source=github&
    |   └── Github Repo
    └── Exit
 ```
-![](https://github.com/TheresAFewConors/Sooty/blob/master/readmeimages/unfurl.PNG)
+![](https://github.com/akshay-nehate/Socterminal/blob/master/readmeimages/unfurl.PNG)
 
 ![](readmeimages/email_analysis.gif)
 
@@ -142,76 +133,9 @@ Sooty is now proudly supported by [Tines.io](https://tines.io?utm_source=github&
  - New features / requests should start by opening an issue. Please use the accompanying template when creating a new issue. This helps track new features and prevent crossover. Attach any additional info that seems relevant if necessary. Before creating a new issue, please check the [Projects Tab](https://github.com/TheresAFewConors/Sooty/projects) to see if this issue has already been requested, or directly with the other open [issues.](https://github.com/TheresAFewConors/Sooty/issues)
  
 ## Changelog
-
-
-#### Version 1.3 - The Templating Update
- - Added first iteration of dynamic email templates that generate based on Sooty's analysis, example below:
-![](readmeimages/templateGen.PNG)
-- Docker Image added
-- Unfurl added 
-
-#### Version 1.2 - The Phishing Update
- - Added first iteration of the Phishing tool.
- - Able to analyze an email (outlook / .msg only tested at the moment) and retrieve emails, urls (Proofpoint decode if necessary) and extract info from headers. 
- - Extract IP's from body of email.
- - Reputation check on sender of email, and provide enriched information.
-
-#### Version 1.1 - The Reputation Update
- - Improved Rep Checker
- - Added HaveIBeenPwned Functionality
- - Added DNS Tools and WhoIs Functionality
- - Added Hash and VirusTotal Checkers
- - Added Abuse IPDB, Tor Exit Node, BadIP's to Reputation Checker
- 
-#### Version 1.0
- - Initial Release
- - URL and Proofpoint Decoder
- - Initial implementation of Reputation Checker
- - Sanitize links to be safe for email
-
-
+TBD
 
 ## Roadmap
   This is an outline of what features *will* be coming in future versions.
-  
-#### Version 1.2 - The Phishing Update
-  - Scan email attachments for malicious content, macros, files, scan hashes, etc.
-
-#### Version 1.3 - The Templating Update
- - ~~Add dynamic email templates that generate based on Sooty's analysis.~~ Edit: Added
- - Verify MX Records
- - Perform DKIM Verification
-
-#### Version 1.4 - The PCAP Analysis Update
-- Add ability to analyze .pcap files and provide concise, enriched information.
-
-#### Version 1.x - The Case Update
-  - Add a 'New Case' Feature, allowing output of the tool to be output to a txt file.
-
-
-
-## Contributors:
-
-#### Code Contributions:
- - [Aaron J Copley](https://github.com/aaronjcopley) for his modified version of [ProofPoint's code](https://files.mtstatic.com/site_6638/177/1?Expires=1570188425&Signature=QWXGWsG0AID7Nyilm8i3vL9ETfRVPCnSmGZA5RtEAPUduQ38Mxh1ReqY6vk-PSLfnPoF6YY76jLUUokZP1gnXSyLTyKIzsiS15f5k1IgY~kwZbekQ6wvMLqPTlM3RjxJbm~iLbPE9qg9W8aX09QhBganS91SwISCPrdJJRJnMko_&Key-Pair-Id=APKAJ5Y6AV4GI7A555NA) to decode ProofPoint URL's
- - [James Duarte](https://github.com/GarnetSunset) for adding a hash and auto-check option to the hashing function
- - [mrpnkt](https://github.com/mrpnkt) for adding the missing whois requirement to requirements.txt
- - [Gurulhu](https://github.com/Gurulhu) for adding the Base64 Decoder to the Decoders menu.
- - [AndThenEnteredAlex](https://github.com/andthenenteredalex) for adding the URLScan Function from URLScan.io
- - [Eric Kelson](https://github.com/ekelson-bcove) for fixing pywin32 requirement not necessary on Linux systems in requirements.txt.
- - [Jenetiks](https://github.com/jenetiks) for removing and tidying up duplicate imports that had accumulated over time, and for providing a toggle between public and private scans on URLScan.io
- - [Nikosch86](https://github.com/nikosch86) for fixing an issue with hexdigest not correctly storing a file hash.
- - [Naveci](https://github.com/naveci) for numerous bug fixes, QoL improvements, Cisco 7 Password Decoding, and introduced a workflow to helps with issues in future. Phishtank support has now also been added, and additional IP blacklists for the reputation checker. 
- - [MrMeeseeks2014](https://github.com/mrmeeseeks2014) fox fixing a bug relating to hash uploads.
- - [mrn42](https://github.com/mrn42) for adding Docker Support.
- - [Ryan Benson](https://github.com/obsidianforensics) for adding [Unfurl](https://github.com/obsidianforensics/unfurl) support to the decoders section.
- - [Nitin Mukesh](https://github.com/nitin-techie) identified and fixed a bug with the BadIP's reputation lookup, and creating a stored txt output of Sooty's analysis. 
- - [Sarthak](https://github.com/sarthak9426) for fixing an issue related to the emailrep API key.
- - [Lesander](https://github.com/lesander) who fixed an issue with bash not recognizing Sooty as an executable file.
-
-#### Documentation Contributors:
- - [Danielf-5](https://github.com/danielf-5) for improvements in the readability 
- - [Paralax](https://github.com/paralax) for fixing typo's in the readme.
- - [mrn42](https://github.com/mrn42) for adding Docker documentation to the readme
 
  ![](readmeimages/vt_hashchecker.gif)
