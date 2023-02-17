@@ -12,9 +12,6 @@ SocTerminal is a tool developed with the task of aiding SOC analysts with automa
  - [Changelog](#changelog)
  - [Roadmap](#roadmap)
  - [Contributors](#contributors)
- 
- 
-## ![](readmeimages/repcheck.gif)
 
 sooty
 ## SocTerminal can Currently:
