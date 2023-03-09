@@ -177,9 +177,9 @@ def titleLogo():
     os.system('cls||clear')
 
 def mainMenu():
-    print("\n ---------------------------------------------- ")
+    print("\n ############################################## ")
     print("\n           S  O  C - T  E R M I N A L           ")
-    print("\n ---------------------------------------------- ")
+    print("\n ############################################## ")
     print(" What would you like to do? ")
     print("\n OPTION 1: Sanitise URL For emails ")
     print(" OPTION 2: Decoders (PP, URL, SafeLinks) ")
@@ -200,7 +200,8 @@ def urlSanitise():
     x = re.sub(r"\.", "[.]", url)
     x = re.sub("http://", "hxxp://", x)
     x = re.sub("https://", "hxxps://", x)
-    print("\n" + x)
+    print("\n Sanitized Link :- " + x)
+    print(" ----------------------------------- ")
     mainMenu()
 
 def decoderMenu():
@@ -219,29 +220,35 @@ def decoderMenu():
     decoderSwitch(input())
 
 def proofPointDecoder():
-    print("\n --------------------------------- ")
-    print(" P R O O F P O I N T D E C O D E R ")
-    print(" --------------------------------- ")
-    rewrittenurl = str(input(" Enter ProofPoint Link: ").strip())
+    print("\n ---------------------------------- ")
+    print(" P R O O F P O I N T - D E C O D E R ")
+    print(" ------------------------------------ ")
+    rewrittenurl = str(input(" Enter ProofPoint Link(no []): ").strip())
     match = re.search(r'https://urldefense.proofpoint.com/(v[0-9])/', rewrittenurl)
     matchv3 = re.search(r'urldefense.com/(v3)/', rewrittenurl)
     if match:
         if match.group(1) == 'v1':
             decodev1(rewrittenurl)
             for each in linksFoundList:
-                print('\n Decoded Link: %s' % each)
+                #print(" --------------------------------- ")
+                print(' Decoded Link: %s' % each)
+                print(" ----------------------------------- ")
                 linksFoundList.clear()
         elif match.group(1) == 'v2':
             decodev2(rewrittenurl)
             for each in linksFoundList:
+                #print(" --------------------------------- ")
                 print('\n Decoded Link: %s' % each)
+                print(" ----------------------------------- ")
                 linksFoundList.clear()
 
     if matchv3 is not None:
         if matchv3.group(1) == 'v3':
             decodev3(rewrittenurl)
             for each in linksFoundList:
+                #print(" --------------------------------- ")
                 print('\n Decoded Link: %s' % each)
+                print(" ----------------------------------- ")
                 linksFoundList.clear()
         else:
             print(' No valid URL found in input: ', rewrittenurl)

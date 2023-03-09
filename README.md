@@ -125,12 +125,10 @@ SocTerminal is a tool developed with the task of aiding SOC analysts with automa
  - If there is an issue with installation or usage, use the supplied template and I will respond ASAP.
 
  #### Requesting Features
- - New features / requests should start by opening an issue. Please use the accompanying template when creating a new issue. This helps track new features and prevent crossover. Attach any additional info that seems relevant if necessary. Before creating a new issue, please check the [Projects Tab](https://github.com/TheresAFewConors/Sooty/projects) to see if this issue has already been requested, or directly with the other open [issues.](https://github.com/TheresAFewConors/Sooty/issues)
+ - New features / requests should start by opening an issue. Please use the accompanying template when creating a new issue. This helps track new features and prevent crossover. Attach any additional info that seems relevant if necessary. Before creating a new issue, please check the [Projects Tab](https://github.com/akshay-nehate/Socterminal/projects) to see if this issue has already been requested, or directly with the other open [issues.](https://github.com/akshay-nehate/Socterminal/issues)
  
 ## Changelog
 TBD
 
 ## Roadmap
   This is an outline of what features *will* be coming in future versions.
-
- ![](readmeimages/vt_hashchecker.gif)
