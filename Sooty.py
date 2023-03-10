@@ -30,13 +30,15 @@ from Modules import iplists
 from Modules import phishtank
 from Modules import TitleOpen
 from datetime import datetime, date
+import msvcrt  # for Windows
+import webbrowser
 
 try:
     import win32com.client
 except:
     print('Cant install Win32com package')
 
-versionNo = '1.3.2'
+versionNo = '0.3.2'
 
 try:
     f = open("config.yaml", "r")
@@ -50,9 +52,20 @@ linksRatingList = []
 linksSanitized = []
 linksDict = {}
 
+def press_any_key():
+    print("Press ENTER to continue... (or type 'fb' to create a github issue)")
+    key = msvcrt.getch()  # wait for user input
+    if key.decode() != '\x03':  # check for Ctrl+C interrupt
+        feedback = input()
+        if feedback.lower() == 'fb':
+            issue_url = 'https://github.com/akshay-nehate/Socterminal/issues/new?assignees=&labels=&template=bug_report.md&title='
+
+            webbrowser.open(issue_url)
+    mainMenu()
+
 def switchMenu(choice):
     if choice == '1':
-        urlSanitise()
+        FangDefangMenu()
     if choice == '2':
         decoderMenu()
     if choice == '3':
@@ -70,6 +83,14 @@ def switchMenu(choice):
     if choice == '0':
         sys.exit("Exiting Sooty... done")
     else:
+        mainMenu()
+
+def FangDefangSwitch(choice):
+    if choice == '1':
+        urlSanitise()
+    if choice == '2':
+        urlDeSanitise()
+    if choice == '3':
         mainMenu()
 
 def decoderSwitch(choice):
@@ -177,32 +198,75 @@ def titleLogo():
     os.system('cls||clear')
 
 def mainMenu():
-    print("\n ############################################## ")
-    print("\n           S  O  C - T  E R M I N A L           ")
-    print("\n ############################################## ")
-    print(" What would you like to do? ")
-    print("\n OPTION 1: Sanitise URL For emails ")
-    print(" OPTION 2: Decoders (PP, URL, SafeLinks) ")
-    print(" OPTION 3: Reputation Checker")
-    print(" OPTION 4: DNS Tools")
-    print(" OPTION 5: Hashing Function")
-    print(" OPTION 6: Phishing Analysis")
-    print(" OPTION 7: URL scan")
-    print(" OPTION 9: Extras")
-    print(" OPTION 0: Exit Tool")
+    border = "+" + "-"*46 + "+"
+    title = "|{:^46}|".format("S  O  C - T  E R M I N A L")
+    options = "|{:<44} {:>2}|"
+    print("\n" + border)
+    print(title)
+    print(border)
+    print(options.format("OPTION 1: Sanitise URL For emails", "1"))
+    print(options.format("OPTION 2: Decoders (PP, URL, SafeLinks)", "2"))
+    print(options.format("OPTION 3: Reputation Checker", "3"))
+    print(options.format("OPTION 4: DNS Tools", "4"))
+    print(options.format("OPTION 5: Hashing Function", "5"))
+    print(options.format("OPTION 6: Phishing Analysis", "6"))
+    print(options.format("OPTION 7: URL scan", "7"))
+    print(options.format("OPTION 9: Extras", "9"))
+    print(options.format("OPTION 0: Exit Tool", "0"))
+    print(border)
     switchMenu(input())
 
+
 def urlSanitise():
-    print("\n --------------------------------- ")
-    print(" U R L   S A N I T I S E   T O O L ")
-    print(" --------------------------------- ")
-    url = str(input("Enter URL to sanitize: ").strip())
-    x = re.sub(r"\.", "[.]", url)
-    x = re.sub("http://", "hxxp://", x)
-    x = re.sub("https://", "hxxps://", x)
-    print("\n Sanitized Link :- " + x)
-    print(" ----------------------------------- ")
-    mainMenu()
+    print("\n" + "="*80)
+    print("|{:^78}|".format("U R L   S A N I T I S E   T O O L"))
+    print("|" + "-"*78 + "|")
+    urls = str(input("|{:<8}|".format("Enter comma seprated URL,Emails OR IPs to sanitize: ")).strip()).split(',')
+    print("|" + "="*78 + "|")
+    for url in urls:
+        x = re.sub(r"\.", "[.]", url)
+        x = re.sub("http://", "hxxp://", x)
+        x = re.sub("https://", "hxxps://", x)
+        input_str = "Input URL: " + url
+        output_str = "Sanitized : " + x
+        max_str_len = max(len(input_str), len(output_str))
+        input_str = "|{:<78}|".format(input_str.ljust(max_str_len, " "))
+        output_str = "|{:<78}|".format(output_str.ljust(max_str_len, " "))
+        print(output_str)
+        print("|" + "="*78 + "|\n")
+    press_any_key()
+
+def urlDeSanitise():
+    print("\n" + "="*80)
+    print("|{:^78}|".format("U R L   S A N I T I S E   T O O L"))
+    print("|" + "-"*78 + "|")
+    urls = str(input("|{:<8}|".format("Enter comma seprated URL,Emails OR IPs to DEsanitize: ")).strip()).split(',')
+    print("|" + "="*78 + "|")
+    for url in urls:
+        x = re.sub(r"\[\.\]", ".", url)
+        x = re.sub("hxxp://", "http://", x)
+        x = re.sub("hxxps://", "https://", x)
+        input_str = "Input URL: " + url
+        output_str = "DeFanged : " + x
+        max_str_len = max(len(input_str), len(output_str))
+        input_str = "|{:<78}|".format(input_str.ljust(max_str_len, " "))
+        output_str = "|{:<78}|".format(output_str.ljust(max_str_len, " "))
+        print(output_str)
+        print("|" + "="*78 + "|\n")
+    press_any_key()
+
+def FangDefangMenu():
+    print("+{:-<78}+".format(""))
+    print("|{:^78}|".format("U R L   F A N G - D E F A N G   M E N U"))
+    print("|{:-<78}|".format(""))
+    print("|{:^78}|".format("What would you like to do?"))
+    print("|{:<78}|".format(""))
+    print("|{:<78}|".format("OPTION 1: DEFANG URL"))
+    print("|{:<78}|".format("OPTION 2: FANG URL"))
+    print("|{:<78}|".format("OPTION 0: Exit to Main Menu"))
+    print("+{:-<78}+".format(""))
+    FangDefangSwitch(input())
+
 
 def decoderMenu():
     print("\n --------------------------------- ")

@@ -15,7 +15,7 @@ def titleOpen():
 :::: ::   ::::: ::  ::::: ::     ::       ::    
 :: : :     : :  :    : :  :      :        :    
  
-                           by @TheresAFewConors''')
+                           by @AkshayNehate''')
     if var == 2:
         print('''
 
@@ -28,7 +28,7 @@ def titleOpen():
                           __/ |
                          |___/ 
                          
-                            by @TheresAFewConors
+                            by @AkshayNehate
 ''')
     print("\n The SOC Analyst's all-in-one tool to "
           "automate and speed up workflow ")
