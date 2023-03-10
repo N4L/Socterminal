@@ -269,19 +269,21 @@ def FangDefangMenu():
 
 
 def decoderMenu():
-    print("\n --------------------------------- ")
-    print("           D E C O D E R S        ")
-    print(" --------------------------------- ")
-    print(" What would you like to do? ")
-    print(" OPTION 1: ProofPoint Decoder")
-    print(" OPTION 2: URL Decoder")
-    print(" OPTION 3: Office SafeLinks Decoder")
-    print(" OPTION 4: URL unShortener")
-    print(" OPTION 5: Base64 Decoder")
-    print(" OPTION 6: Cisco Password 7 Decoder")
-    print(" OPTION 7: Unfurl URL")
-    print(" OPTION 0: Exit to Main Menu")
+    print("+---------------------------------+")
+    print("|          D E C O D E R S        |")
+    print("+---------------------------------+")
+    print("| What would you like to do?      |")
+    print("| 1: ProofPoint Decoder           |")
+    print("| 2: URL Decoder                  |")
+    print("| 3: Office SafeLinks Decoder     |")
+    print("| 4: URL unShortener              |")
+    print("| 5: Base64 Decoder               |")
+    print("| 6: Cisco Password 7 Decoder     |")
+    print("| 7: Unfurl URL                   |")
+    print("| 0: Exit to Main Menu            |")
+    print("+---------------------------------+")
     decoderSwitch(input())
+
 
 def proofPointDecoder():
     print("\n ---------------------------------- ")
@@ -577,15 +579,19 @@ def repChecker():
         print("None valid Detected input type:", input_str)
 
 def dnsMenu():
-    print("\n --------------------------------- ")
-    print("         D N S    T O O L S        ")
-    print(" --------------------------------- ")
-    print(" What would you like to do? ")
-    print(" OPTION 1: Reverse DNS Lookup")
-    print(" OPTION 2: DNS Lookup")
-    print(" OPTION 3: WHOIS Lookup")
-    print(" OPTION 0: Exit to Main Menu")
+    print("+{:-^38}+".format(""))
+    print("|{:^38}|".format("DNS TOOLS"))
+    print("+{:-^38}+".format(""))
+    print("|{:^38}|".format("What would you like to do?"))
+    print("+{:-^38}+".format(""))
+    print("|{:<38}|".format("1. Reverse DNS Lookup"))
+    print("|{:<38}|".format("2. DNS Lookup"))
+    print("|{:<38}|".format("3. WHOIS Lookup"))
+    print("|{:<38}|".format("0. Exit to Main Menu"))
+    print("+{:-^38}+".format(""))
     dnsSwitch(input())
+
+
 
 def reverseDnsLookup():
     d = str(input(" Enter IP to check: ").strip())
@@ -673,16 +679,19 @@ def whoIsPrint(ip):
     return
 
 def hashMenu():
-    print("\n --------------------------------- ")
-    print(" H A S H I N G   F U N C T I O N S ")
-    print(" --------------------------------- ")
-    print(" What would you like to do? ")
-    print(" OPTION 1: Hash a file")
-    print(" OPTION 2: Input and hash text")
-    print(" OPTION 3: Check a hash for known malicious activity")
-    print(" OPTION 4: Hash a file, check a hash for known malicious activity")
-    print(" OPTION 0: Exit to Main Menu")
+    print("+{:-^55}+".format(""))
+    print("|{:^55}|".format("HASHING FUNCTIONS"))
+    print("+{:-^55}+".format(""))
+    print("|{:^55}|".format("What would you like to do?"))
+    print("+{:-^55}+".format(""))
+    print("|{:<55}|".format("1. Hash a file"))
+    print("|{:<55}|".format("2. Input and hash text"))
+    print("|{:<55}|".format("3. Check a hash for known malicious activity"))
+    print("|{:<55}|".format("4. Hash a file, check a hash for malicious activity"))
+    print("|{:<55}|".format("0. Exit to Main Menu"))
+    print("+{:-^55}+".format(""))
     hashSwitch(input())
+
 
 def hashFile():
     root = tkinter.Tk()
@@ -758,17 +767,19 @@ def hashAndFileUpload():
     hashMenu()
 
 def phishingMenu():
-    print("\n --------------------------------- ")
-    print("          P H I S H I N G          ")
-    print(" --------------------------------- ")
-    print(" What would you like to do? ")
-    print(" OPTION 1: Analyze an Email ")
-    print(" OPTION 2: Analyze an Email Address for Known Activity")
-    print(" OPTION 3: Generate an Email Template based on Analysis")
-    print(" OPTION 4: Analyze an URL with Phishtank")
-    print(" OPTION 9: HaveIBeenPwned")
-    print(" OPTION 0: Exit to Main Menu")
+    print("+{:-^62}+".format(""))
+    print("|{:^62}|".format("P H I S H I N G   T O O L S"))
+    print("+{:-^62}+".format(""))
+    print("|{:<62}|".format("What would you like to do?"))
+    print("|{:<62}|".format("OPTION 1: Analyze an Email"))
+    print("|{:<62}|".format("OPTION 2: Analyze an Email Address for Known Activity"))
+    print("|{:<62}|".format("OPTION 3: Generate an Email Template based on Analysis"))
+    print("|{:<62}|".format("OPTION 4: Analyze a URL with Phishtank"))
+    print("|{:<62}|".format("OPTION 9: HaveIBeenPwned"))
+    print("|{:<62}|".format("OPTION 0: Exit to Main Menu"))
+    print("+{:-^62}+".format(""))
     phishingSwitch(input())
+
 
 def analyzePhish():
     try:
@@ -1229,17 +1240,19 @@ def phishtankModule():
         print("Missing configuration for phishtank in the config.yaml file.")
 
 def extrasMenu():
-    print("\n --------------------------------- ")
-    print("            E X T R A S            ")
-    print(" --------------------------------- ")
-    print(" What would you like to do? ")
-    print(" OPTION 1: About SOOTY ")
-    print(" OPTION 2: Contributors ")
-    print(" OPTION 3: Version")
-    print(" OPTION 4: Wiki")
-    print(" OPTION 5: GitHub Repo")
-    print(" OPTION 0: Exit to Main Menu")
+    print("+{:-^62}+".format(""))
+    print("|{:^62}|".format("E X T R A S"))
+    print("+{:-^62}+".format(""))
+    print("|{:<62}|".format("What would you like to do?"))
+    print("|{:<62}|".format("OPTION 1: About SOOTY"))
+    print("|{:<62}|".format("OPTION 2: Contributors"))
+    print("|{:<62}|".format("OPTION 3: Version"))
+    print("|{:<62}|".format("OPTION 4: Wiki"))
+    print("|{:<62}|".format("OPTION 5: GitHub Repo"))
+    print("|{:<62}|".format("OPTION 0: Exit to Main Menu"))
+    print("+{:-^62}+".format(""))
     extrasSwitch(input())
+
 
 def aboutSooty():
     print(' SOOTY is a tool developed and targeted to help automate some tasks that SOC Analysts perform.')
