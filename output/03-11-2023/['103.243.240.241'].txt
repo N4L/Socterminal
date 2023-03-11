@@ -1,0 +1,17 @@
+
+ ---------------------------------
+ WHO IS REPORT:
+ ---------------------------------
+
+ CIDR:      103.243.240.0/24
+ Name:      DAIKICHILLC-JP  Handle:    AD1069-AP
+ Range:     103.243.240.0 - 103.243.240.255
+ Descr:     Shinmakicho Bldg. Bekkan Dai-1 1F, 3-2-14, Nihonbashi
+ Country:   JP
+ State:     None
+ City:      None
+ Address:   Shinmakicho Bldg. Bekkan Dai-1 1F, 3-2-14, Nihonbashi, Chuo-ku Tokyo 103-0027
+ Post Code: None  Emails:    ['info@daikichi-llc.com']
+ Created:   None
+ Updated:   None
+ Abuse Email: info@daikichi-llc.com

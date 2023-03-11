@@ -1,0 +1,17 @@
+
+ ---------------------------------
+ WHO IS REPORT:
+ ---------------------------------
+
+ CIDR:      8.0.0.0/9
+ Name:      LVLT-ORG-8-8  Handle:    NET-8-0-0-0-1
+ Range:     8.0.0.0 - 8.127.255.255
+ Descr:     Level 3 Parent, LLC
+ Country:   US
+ State:     LA
+ City:      Monroe
+ Address:   100 CenturyLink Drive
+ Post Code: 71203  Emails:    ['abuse@aup.lumen.com', 'ipadmin@lumen.com', 'abuse@level3.com']
+ Created:   1992-12-01
+ Updated:   2018-04-23
+ Abuse Email: abuse@aup.lumen.com  description:   Google LLC  address:   1600 Amphitheatre Parkway  emails:   ['network-abuse@google.com', 'arin-contact@google.com']  updated:   2014-03-14

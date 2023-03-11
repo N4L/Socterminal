@@ -10,6 +10,7 @@
 import base64
 
 from unfurl import core
+from prettytable import PrettyTable
 import hashlib
 import html.parser
 import re
@@ -25,7 +26,8 @@ import tkinter
 import sys
 import whois
 from pprint import pprint
-
+from tabulate import tabulate
+from bs4 import BeautifulSoup
 from Modules import iplists
 from Modules import phishtank
 from Modules import TitleOpen
@@ -467,116 +469,124 @@ def repChecker():
     email_pattern = re.compile(r'\S+@\S+\.\S+')
     # Check if the input matches any of the patterns
     if ip_pattern.match(input_str):
-        ipw = re.search(r'\b(?:\d{1,3}\.){3}\d{1,3}\b', input_str).group(0)
+        #ipw = re.search(r'\b(?:\d{1,3}\.){3}\d{1,3}\b', input_str).group(0)
         # Print the detected input type
-        print("Detected input type:", ipw)
-        obj = IPWhois(ipw).lookup_rdap(asn_methods=['dns', 'whois', 'http'])
-        pprint(obj)
-        #
-        whoIsPrint(ipw)
-        wIP = socket.gethostbyname(ipw)
-        now = datetime.now()
-        today = now.strftime("%m-%d-%Y")
-
-        if not os.path.exists('output/'+today):
-            os.makedirs('output/'+today)
-        f= open('output/'+today+'/'+str(ipw) + ".txt","a+")
-
-        print("\n VirusTotal Report:")
-        f.write("\n --------------------------------- ")
-        f.write("\n VirusTotal Report:")
-        f.write("\n --------------------------------- \n")
-
-        url = 'https://www.virustotal.com/vtapi/v2/ip-address/report'
-        #params = {'apikey': configvars.data['VT_API_KEY'], 'resource': wIP}
-        params = {'apikey':configvars.data['VT_API_KEY'],'ip':ipw}
-        response = requests.get(url, params=params)
-        if response.status_code == 200:
-            report = response.json()
-            if report["response_code"] == 1:
-                detected_urls = report.get("detected_urls", [])
-                if not detected_urls:
-                    print(f"{ipw} has not been reported for malicious activity.")
-                else:
-                    print(f"{ipw} has been reported for malicious activity by {len(detected_urls)} sources.")
-                    for url in detected_urls:
-                        print(f"{url['url']} - {url['positives']}/{url['total']} antivirus programs detected this threat.")
-                pretty_report = json.dumps(report, indent=4)
-                print(pretty_report)
-                f.write(pretty_report)          
-            else:
-                print(f"Error: {report['verbose_msg']}")
-        else:
-            print(f"Error: {response.status_code} {response.reason}")
-
+        print("Detected input type:", input_str)
         try:
-            url = f"https://check.torproject.org/cgi-bin/TorBulkExitList.py?ip={ipw}"
-            try:
-                response = requests.get(url, timeout=5)
-                if response.status_code == 200 and ipw in response.text:
-                    print(f"{ipw} is a Tor node.")
-                else:
-                    print(f"{ipw} is not a Tor node.")
-            except requests.exceptions.RequestException as e:
-                print(f"An error occurred: {e}")
-        except Exception as e:
-            print("There is an error with checking for Tor exit nodes:\n" + str(e))
-
-        print("\n ABUSEIPDB Report:")
-        f.write("\n\n ---------------------------------")
-        f.write("\n ABUSEIPDB Report:")
-        f.write("\n ---------------------------------\n")
-
-        try:
-            AB_URL = 'https://api.abuseipdb.com/api/v2/check'
-            days = '180'
-
-            querystring = {
-                'ipAddress': wIP,
-                'maxAgeInDays': days
-            }
-
-            headers = {
-                'Accept': 'application/json',
-                'Key': configvars.data['AB_API_KEY']
-            }
-            response = requests.request(method='GET', url=AB_URL, headers=headers, params=querystring)
-            if response.status_code == 200:
-                req = response.json()
-
-                print("   IP:          " + str(req['data']['ipAddress']))
-                print("   Reports:     " + str(req['data']['totalReports']))
-                print("   Abuse Score: " + str(req['data']['abuseConfidenceScore']) + "%")
-                print("   Last Report: " + str(req['data']['lastReportedAt']))
-                f.write("\n\n IP:        " + str(req['data']['ipAddress']))
-                f.write("\n Reports:     " + str(req['data']['totalReports']))
-                f.write("\n Abuse Score: " + str(req['data']['abuseConfidenceScore']) + "%")
-                f.write("\n Last Report: " + str(req['data']['lastReportedAt']))
-                f.close()
-
-            else:
-                print("   Error Reaching ABUSE IPDB")
-        except:
-            print('   IP Not Found')
-
-            print("\n\nChecking against IP blacklists: ")
-            iplists.main(ipw)
-            mainMenu()
-        
-    elif url_pattern.match(input_str):
-        domain_name = re.search(r'(?<=://)[\w.-]+', input_str).group(0)
-        # Print the detected input type
-        print("Detected input type:", domain_name)
-        
-    elif email_pattern.match(input_str):
-        email = re.search(r'\S+@\S+\.\S+', input_str).group(0)
-        # Print the detected input type
-        print("Detected input type:", email)
-        
+            whoIsPrint(input_str)
+        except ValueError:
+            print("Invalid IP address format.")
+        except KeyError:
+            print("WHOIS results are incomplete or invalid.")
     else:
+        print("Input is not an IP address.")    
+        
 
-        # Print the detected input type
-        print("None valid Detected input type:", input_str)
+
+#        whoIsPrint(ipw)
+#        wIP = socket.gethostbyname(ipw)
+#        now = datetime.now()
+#        today = now.strftime("%m-%d-%Y")#
+
+#        if not os.path.exists('output/'+today):
+#            os.makedirs('output/'+today)
+#        f= open('output/'+today+'/'+str(ipw) + ".txt","a+")#
+
+#        print("\n VirusTotal Report:")
+#        f.write("\n --------------------------------- ")
+#        f.write("\n VirusTotal Report:")
+#        f.write("\n --------------------------------- \n")#
+
+#        url = 'https://www.virustotal.com/vtapi/v2/ip-address/report'
+#        #params = {'apikey': configvars.data['VT_API_KEY'], 'resource': wIP}
+#        params = {'apikey':configvars.data['VT_API_KEY'],'ip':ipw}
+#        response = requests.get(url, params=params)
+#        if response.status_code == 200:
+#            report = response.json()
+#            if report["response_code"] == 1:
+#                detected_urls = report.get("detected_urls", [])
+#                if not detected_urls:
+#                    print(f"{ipw} has not been reported for malicious activity.")
+#                else:
+#                    print(f"{ipw} has been reported for malicious activity by {len(detected_urls)} sources.")
+#                    for url in detected_urls:
+#                        print(f"{url['url']} - {url['positives']}/{url['total']} antivirus programs detected this threat.")
+#                pretty_report = json.dumps(report, indent=4)
+#                print(pretty_report)
+#                f.write(pretty_report)          
+#            else:
+#                print(f"Error: {report['verbose_msg']}")
+#        else:
+#            print(f"Error: {response.status_code} {response.reason}")#
+
+#        try:
+#            url = f"https://check.torproject.org/cgi-bin/TorBulkExitList.py?ip={ipw}"
+#            try:
+#                response = requests.get(url, timeout=5)
+#                if response.status_code == 200 and ipw in response.text:
+#                    print(f"{ipw} is a Tor node.")
+#                else:
+#                    print(f"{ipw} is not a Tor node.")
+#            except requests.exceptions.RequestException as e:
+#                print(f"An error occurred: {e}")
+#        except Exception as e:
+#            print("There is an error with checking for Tor exit nodes:\n" + str(e))#
+
+#        print("\n ABUSEIPDB Report:")
+#        f.write("\n\n ---------------------------------")
+#        f.write("\n ABUSEIPDB Report:")
+#        f.write("\n ---------------------------------\n")#
+
+#        try:
+#            AB_URL = 'https://api.abuseipdb.com/api/v2/check'
+#            days = '180'#
+
+#            querystring = {
+#                'ipAddress': wIP,
+#                'maxAgeInDays': days
+#            }#
+
+#            headers = {
+#                'Accept': 'application/json',
+#                'Key': configvars.data['AB_API_KEY']
+#            }
+#            response = requests.request(method='GET', url=AB_URL, headers=headers, params=querystring)
+#            if response.status_code == 200:
+#                req = response.json()#
+
+#                print("   IP:          " + str(req['data']['ipAddress']))
+#                print("   Reports:     " + str(req['data']['totalReports']))
+#                print("   Abuse Score: " + str(req['data']['abuseConfidenceScore']) + "%")
+#                print("   Last Report: " + str(req['data']['lastReportedAt']))
+#                f.write("\n\n IP:        " + str(req['data']['ipAddress']))
+#                f.write("\n Reports:     " + str(req['data']['totalReports']))
+#                f.write("\n Abuse Score: " + str(req['data']['abuseConfidenceScore']) + "%")
+#                f.write("\n Last Report: " + str(req['data']['lastReportedAt']))
+#                f.close()#
+
+#            else:
+#                print("   Error Reaching ABUSE IPDB")
+#        except:
+#            print('   IP Not Found')#
+
+#            print("\n\nChecking against IP blacklists: ")
+#            iplists.main(ipw)
+#            mainMenu()
+#        
+#    elif url_pattern.match(input_str):
+#        domain_name = re.search(r'(?<=://)[\w.-]+', input_str).group(0)
+#        # Print the detected input type
+#        print("Detected input type:", domain_name)
+#        
+#    elif email_pattern.match(input_str):
+#        email = re.search(r'\S+@\S+\.\S+', input_str).group(0)
+#        # Print the detected input type
+#        print("Detected input type:", email)
+#        
+#    else:#
+
+#        # Print the detected input type
+#        print("None valid Detected input type:", input_str)
 
 def dnsMenu():
     print("+{:-^38}+".format(""))
@@ -623,22 +633,47 @@ def whoIsPrint(ip):
     try:
         w = IPWhois(ip)
         w = w.lookup_whois()
-        addr = str(w['nets'][0]['address'])
-        addr = addr.replace('\n', ', ')
-        print("\n WHO IS REPORT:")
-        print("  CIDR:      " + str(w['nets'][0]['cidr']))
-        print("  Name:      " + str(w['nets'][0]['name']))
-        # print("  Handle:    " + str(w['nets'][0]['handle']))
-        print("  Range:     " + str(w['nets'][0]['range']))
-        print("  Descr:     " + str(w['nets'][0]['description']))
-        print("  Country:   " + str(w['nets'][0]['country']))
-        print("  State:     " + str(w['nets'][0]['state']))
-        print("  City:      " + str(w['nets'][0]['city']))
-        print("  Address:   " + addr)
-        print("  Post Code: " + str(w['nets'][0]['postal_code']))
-        # print("  Emails:    " + str(w['nets'][0]['emails']))
-        print("  Created:   " + str(w['nets'][0]['created']))
-        print("  Updated:   " + str(w['nets'][0]['updated']))
+        pprint(w)
+        addr = str(w['nets'][0]['address']).replace('\n', ', ')
+        abuse_email = w['nets'][0]['emails'][0]
+
+        # Define table rows as tuples of field names and values
+        rows = [
+            ("CIDR", w['nets'][0]['cidr']),
+            ("Name", w['nets'][0]['name']),
+            ("Handle", w['nets'][0]['handle']),
+            ("Range", w['nets'][0]['range']),
+            ("Descr", w['nets'][0]['description']),
+            ("Country", w['nets'][0]['country']),
+            ("State", w['nets'][0]['state']),
+            ("City", w['nets'][0]['city']),
+            ("Address", addr),
+            ("Post Code", w['nets'][0]['postal_code']),
+            ("Emails", ', '.join(w['nets'][0]['emails'])),
+            ("Created", w['nets'][0]['created']),
+            ("Updated", w['nets'][0]['updated']),
+            ("Abuse Email", abuse_email)
+#            ("Alt Descr", w['nets'][1]['description']),
+#            ("Alt Address", str(w['nets'][1]['address'])),
+#            ("Alt Emails", ', '.join(w['nets'][1]['emails'])),
+#            ("Alt Updated", w['nets'][1]['updated'])
+        ]
+
+        # Determine maximum length for field names and values
+        max_name_len = max(len(name) for name, _ in rows)
+        max_value_len = max(len(str(value)) for _, value in rows)
+
+        # Print table header
+        print(f"+{'-' * (max_name_len + 2)}+{'-' * (max_value_len + 2)}+")
+        print(f"| {'Field':<{max_name_len}} | {'Value':<{max_value_len}} |")
+        print(f"+{'-' * (max_name_len + 2)}+{'-' * (max_value_len + 2)}+")
+
+        # Print table rows
+        for name, value in rows:
+            print(f"| {name:<{max_name_len}} | {str(value):<{max_value_len}} |")
+
+        # Print table footer
+        print(f"+{'-' * (max_name_len + 2)}+{'-' * (max_value_len + 2)}+")
 
         now = datetime.now() # current date and time
         today = now.strftime("%m-%d-%Y")
@@ -651,7 +686,7 @@ def whoIsPrint(ip):
         f.write("\n ---------------------------------\n")
         f.write("\n CIDR:      " + str(w['nets'][0]['cidr']))
         f.write("\n Name:      " + str(w['nets'][0]['name']))
-        # print("  Handle:    " + str(w['nets'][0]['handle']))
+        f.write("  Handle:    " + str(w['nets'][0]['handle']))
         f.write("\n Range:     " + str(w['nets'][0]['range']))
         f.write("\n Descr:     " + str(w['nets'][0]['description']))
         f.write("\n Country:   " + str(w['nets'][0]['country']))
@@ -659,9 +694,15 @@ def whoIsPrint(ip):
         f.write("\n City:      " + str(w['nets'][0]['city']))
         f.write("\n Address:   " + addr)
         f.write("\n Post Code: " + str(w['nets'][0]['postal_code']))
-        # print("  Emails:    " + str(w['nets'][0]['emails']))
+        f.write("  Emails:    " + str(w['nets'][0]['emails']))
         f.write("\n Created:   " + str(w['nets'][0]['created']))
         f.write("\n Updated:   " + str(w['nets'][0]['updated']))
+        f.write("\n Abuse Email: " + abuse_email)
+        f.write("  description:   " + str(w['nets'][1]['description']))
+        f.write("  address:   " + str(w['nets'][1]['address']))
+        f.write("  emails:   " + str(w['nets'][1]['emails']))
+        f.write("  updated:   " + str(w['nets'][1]['updated']))
+
         f.close();
         c = 0
     except:
