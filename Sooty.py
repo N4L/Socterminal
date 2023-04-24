@@ -509,10 +509,11 @@ def repChecker():
         # Print the detected input type
         print("Detected input type:", input_str)
         try:
+            # CALL WHOIS FUNCTION TO PRODUCE REPORT
             whoIsPrint(input_str)
 
+            # VIRTUS TOTAL REPORT
             console = Console()
-
             console.rule("[bold blue]VirusTotal Report:[/bold blue]")
 
             url = 'https://www.virustotal.com/vtapi/v2/ip-address/report'
@@ -545,6 +546,7 @@ def repChecker():
             else:
                 console.print(f"Error: {response.status_code} {response.reason}")
 
+            # CHECK IF IP IS A TOR NODE
             console.rule("[bold blue]Tor Node Check:[/bold blue]")
 
             try:
@@ -559,9 +561,43 @@ def repChecker():
                     console.print(f"An error occurred: {e}")
             except Exception as e:
                 console.print("There is an error with checking for Tor exit nodes:\n" + str(e))
-
-
-
+            
+            # IPABUSE DATABASE CHECK FROM AbuseIPDB
+            try:
+                console.rule("[bold blue] AbuseIPDB Check:[/bold blue]")
+                from rich.console import Console
+                from rich.table import Table
+                from rich import box
+    
+                console = Console()
+    
+                AB_URL = 'https://api.abuseipdb.com/api/v2/check'
+                days = '180'
+    
+                querystring = {
+                    'ipAddress': input_str,
+                    'maxAgeInDays': days
+                }
+    
+                headers = {
+                    'Accept': 'application/json',
+                    'Key': configvars.data['AB_API_KEY']
+                }
+                response = requests.request(method='GET', url=AB_URL, headers=headers, params=querystring)
+                
+                if response.status_code == 200:
+                    req = response.json()
+                    table = Table(show_header=True, header_style="bold magenta", box=box.ROUNDED)
+                    table.add_column("IP")
+                    table.add_column("Reports")
+                    table.add_column("Abuse Score")
+                    table.add_column("Last Report")
+                    table.add_row(str(req['data']['ipAddress']), str(req['data']['totalReports']), str(req['data']['abuseConfidenceScore']) + "%", str(req['data']['lastReportedAt']))
+                    console.print(table)
+                else:
+                    print("Error Reaching ABUSE IPDB")
+            except:
+                print('   IP Not Found')
 
         except ValueError:
             print("Invalid IP address format.")
@@ -569,96 +605,15 @@ def repChecker():
             print("WHOIS results are incomplete or invalid.")
     else:
         print("Input is not an IP address.")    
-        
 
+    wIP = socket.gethostbyname(input_str)
+    now = datetime.now()
+    today = now.strftime("%m-%d-%Y")#
 
-#        whoIsPrint(ipw)
-        wIP = socket.gethostbyname(input_str)
-        now = datetime.now()
-        today = now.strftime("%m-%d-%Y")#
-
-        if not os.path.exists('output/'+today):
-            os.makedirs('output/'+today)
-        f= open('output/'+today+'/'+str(input_str) + ".txt","a+")#
-
-        print("\n VirusTotal Report:")
-        f.write("\n --------------------------------- ")
-        f.write("\n VirusTotal Report:")
-        f.write("\n --------------------------------- \n")#
-        url = 'https://www.virustotal.com/vtapi/v2/ip-address/report'
-        #params = {'apikey': configvars.data['VT_API_KEY'], 'resource': wIP}
-        params = {'apikey':configvars.data['VT_API_KEY'],'ip':ipw}
-        response = requests.get(url, params=params)
-        if response.status_code == 200:
-            report = response.json()
-            if report["response_code"] == 1:
-                detected_urls = report.get("detected_urls", [])
-                if not detected_urls:
-                    print(f"{ipw} has not been reported for malicious activity.")
-                else:
-                    print(f"{ipw} has been reported for malicious activity by {len(detected_urls)} sources.")
-                    for url in detected_urls:
-                        print(f"{url['url']} - {url['positives']}/{url['total']} antivirus programs detected this threat.")
-                pretty_report = json.dumps(report, indent=4)
-                print(pretty_report)
-                f.write(pretty_report)          
-            else:
-                print(f"Error: {report['verbose_msg']}")
-        else:
-            print(f"Error: {response.status_code} {response.reason}")#
-        try:
-            url = f"https://check.torproject.org/cgi-bin/TorBulkExitList.py?ip={ipw}"
-            try:
-                response = requests.get(url, timeout=5)
-                if response.status_code == 200 and ipw in response.text:
-                    print(f"{ipw} is a Tor node.")
-                else:
-                    print(f"{ipw} is not a Tor node.")
-            except requests.exceptions.RequestException as e:
-                print(f"An error occurred: {e}")
-        except Exception as e:
-            print("There is an error with checking for Tor exit nodes:\n" + str(e))#
-
-#        print("\n ABUSEIPDB Report:")
-#        f.write("\n\n ---------------------------------")
-#        f.write("\n ABUSEIPDB Report:")
-#        f.write("\n ---------------------------------\n")#
-
-#        try:
-#            AB_URL = 'https://api.abuseipdb.com/api/v2/check'
-#            days = '180'#
-
-#            querystring = {
-#                'ipAddress': wIP,
-#                'maxAgeInDays': days
-#            }#
-
-#            headers = {
-#                'Accept': 'application/json',
-#                'Key': configvars.data['AB_API_KEY']
-#            }
-#            response = requests.request(method='GET', url=AB_URL, headers=headers, params=querystring)
-#            if response.status_code == 200:
-#                req = response.json()#
-
-#                print("   IP:          " + str(req['data']['ipAddress']))
-#                print("   Reports:     " + str(req['data']['totalReports']))
-#                print("   Abuse Score: " + str(req['data']['abuseConfidenceScore']) + "%")
-#                print("   Last Report: " + str(req['data']['lastReportedAt']))
-#                f.write("\n\n IP:        " + str(req['data']['ipAddress']))
-#                f.write("\n Reports:     " + str(req['data']['totalReports']))
-#                f.write("\n Abuse Score: " + str(req['data']['abuseConfidenceScore']) + "%")
-#                f.write("\n Last Report: " + str(req['data']['lastReportedAt']))
-#                f.close()#
-
-#            else:
-#                print("   Error Reaching ABUSE IPDB")
-#        except:
-#            print('   IP Not Found')#
-
-#            print("\n\nChecking against IP blacklists: ")
-#            iplists.main(ipw)
-#            mainMenu()
+    if not os.path.exists('output/'+today):
+        os.makedirs('output/'+today)
+        f= open('output/'+today+'/'+str(input_str) + ".txt","a+")
+    press_any_key()
 #        
 #    elif url_pattern.match(input_str):
 #        domain_name = re.search(r'(?<=://)[\w.-]+', input_str).group(0)
@@ -673,7 +628,7 @@ def repChecker():
 #    else:#
 
 #        # Print the detected input type
-#        print("None valid Detected input type:", input_str)
+#        print("None valid Detected input type:", input_str)]
 
 def dnsMenu():
     print("+{:-^38}+".format(""))

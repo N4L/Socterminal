@@ -124,3 +124,69 @@
  Country:   HK
  State:     None
  City:      None
+ ---------------------------------
+ WHO IS REPORT:
+ ---------------------------------
+
+ CIDR:      118.193.32.0/20
+ Name:      UCLOUD-HK  Handle:    AU164-AP
+ Range:     118.193.32.0 - 118.193.47.255
+ Descr:     UCLOUD INFORMATION TECHNOLOGY (HK) LIMITED
+ Country:   HK
+ State:     None
+ City:      None
+ ---------------------------------
+ WHO IS REPORT:
+ ---------------------------------
+
+ CIDR:      118.193.32.0/20
+ Name:      UCLOUD-HK  Handle:    AU164-AP
+ Range:     118.193.32.0 - 118.193.47.255
+ Descr:     UCLOUD INFORMATION TECHNOLOGY (HK) LIMITED
+ Country:   HK
+ State:     None
+ City:      None
+ ---------------------------------
+ WHO IS REPORT:
+ ---------------------------------
+
+ CIDR:      118.193.32.0/20
+ Name:      UCLOUD-HK  Handle:    AU164-AP
+ Range:     118.193.32.0 - 118.193.47.255
+ Descr:     UCLOUD INFORMATION TECHNOLOGY (HK) LIMITED
+ Country:   HK
+ State:     None
+ City:      None
+ ---------------------------------
+ WHO IS REPORT:
+ ---------------------------------
+
+ CIDR:      118.193.32.0/20
+ Name:      UCLOUD-HK  Handle:    AU164-AP
+ Range:     118.193.32.0 - 118.193.47.255
+ Descr:     UCLOUD INFORMATION TECHNOLOGY (HK) LIMITED
+ Country:   HK
+ State:     None
+ City:      None
+ ---------------------------------
+ WHO IS REPORT:
+ ---------------------------------
+
+ CIDR:      118.193.32.0/20
+ Name:      UCLOUD-HK  Handle:    AU164-AP
+ Range:     118.193.32.0 - 118.193.47.255
+ Descr:     UCLOUD INFORMATION TECHNOLOGY (HK) LIMITED
+ Country:   HK
+ State:     None
+ City:      None
+ ---------------------------------
+ WHO IS REPORT:
+ ---------------------------------
+
+ CIDR:      118.193.32.0/20
+ Name:      UCLOUD-HK  Handle:    AU164-AP
+ Range:     118.193.32.0 - 118.193.47.255
+ Descr:     UCLOUD INFORMATION TECHNOLOGY (HK) LIMITED
+ Country:   HK
+ State:     None
+ City:      None
