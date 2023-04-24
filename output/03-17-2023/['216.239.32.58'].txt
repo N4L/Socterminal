@@ -1,0 +1,17 @@
+
+ ---------------------------------
+ WHO IS REPORT:
+ ---------------------------------
+
+ CIDR:      216.239.32.0/19
+ Name:      GOOGLE  Handle:    NET-216-239-32-0-1
+ Range:     216.239.32.0 - 216.239.63.255
+ Descr:     Google LLC
+ Country:   US
+ State:     CA
+ City:      Mountain View
+ Address:   1600 Amphitheatre Parkway
+ Post Code: 94043  Emails:    ['network-abuse@google.com', 'arin-contact@google.com']
+ Created:   2000-11-22
+ Updated:   2012-02-24
+ Abuse Email: network-abuse@google.com

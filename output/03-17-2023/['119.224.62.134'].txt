@@ -1,0 +1,18 @@
+
+ ---------------------------------
+ WHO IS REPORT:
+ ---------------------------------
+
+ CIDR:      119.224.0.0/17
+ Name:      TWO-DEGREES-NZ  Handle:    AX146-AP
+ Range:     119.224.0.0 - 119.224.127.255
+ Descr:     Two Degress Mobile Limited
+ Country:   NZ
+ State:     None
+ City:      None
+ Address:   Two Degrees Mobile Limited 47 George Street, Newmarket, Auckland, New Zealand
+ Post Code: None  Emails:    ['peering@2degrees.nz', 'abuse@2degrees.nz', 'noc@2degrees.nz']
+ Created:   None
+ Updated:   None
+ Abuse Email: peering@2degrees.nz  description:   CallPlus Services Limited
+                Level 5, 34 Sale St  address:   None  emails:   None  updated:   None

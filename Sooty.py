@@ -8,7 +8,6 @@
 """
 
 import base64
-
 from unfurl import core
 from prettytable import PrettyTable
 import hashlib
@@ -34,13 +33,17 @@ from Modules import TitleOpen
 from datetime import datetime, date
 import msvcrt  # for Windows
 import webbrowser
+from tkinter import filedialog
+from rich.console import Console
+from rich.table import Table
+from rich.prompt import Prompt
 
 try:
     import win32com.client
 except:
     print('Cant install Win32com package')
 
-versionNo = '0.3.2'
+versionNo = '0.1.1'
 
 try:
     f = open("config.yaml", "r")
@@ -200,23 +203,54 @@ def titleLogo():
     os.system('cls||clear')
 
 def mainMenu():
-    border = "+" + "-"*46 + "+"
-    title = "|{:^46}|".format("S  O  C - T  E R M I N A L")
-    options = "|{:<44} {:>2}|"
-    print("\n" + border)
-    print(title)
-    print(border)
-    print(options.format("OPTION 1: Sanitise URL For emails", "1"))
-    print(options.format("OPTION 2: Decoders (PP, URL, SafeLinks)", "2"))
-    print(options.format("OPTION 3: Reputation Checker", "3"))
-    print(options.format("OPTION 4: DNS Tools", "4"))
-    print(options.format("OPTION 5: Hashing Function", "5"))
-    print(options.format("OPTION 6: Phishing Analysis", "6"))
-    print(options.format("OPTION 7: URL scan", "7"))
-    print(options.format("OPTION 9: Extras", "9"))
-    print(options.format("OPTION 0: Exit Tool", "0"))
-    print(border)
-    switchMenu(input())
+    # Create a new Console instance
+    console = Console()
+
+    # Create a new Table instance
+    table = Table(show_header=True, header_style="bold magenta")
+
+    # Add columns to the table
+    table.add_column("Item Number", style="dim", width=12)
+    table.add_column("Menu Item", justify="left")
+
+    # Add rows to the table
+    table.add_row("1", "Sanitise URLs")
+    table.add_row("2", "Decoders (PP, URL, SafeLinks)")
+    table.add_row("3", "Reputation Checker")
+    table.add_row("4", "DNS Tools")
+    table.add_row("5", "Hashing Function")
+    table.add_row("6", "Phishing Analysis")
+    table.add_row("7", "URL scan")
+    table.add_row("0", "Exit")
+
+    # Print the table to the console using the Console class
+    console.print(table)
+    # Prompt the user to select a menu item
+    item_num = Prompt.ask("Enter the item number of the menu item you want to select: ")
+
+    # Display the user's selection
+    console.print(f"You selected menu item number {item_num}")
+    
+    # Pass User Input
+    switchMenu(item_num)
+
+    #border = "+" + "-"*46 + "+"
+    #title = "|{:^46}|".format("S  O  C - T  E R M I N A L")
+    #options = "|{:<44} {:>2}|"
+    #print("\n" + border)
+    #print(title)
+    #print(border)
+    #print(options.format("OPTION 1: Sanitise URL For emails", "1"))
+    #print(options.format("OPTION 2: Decoders (PP, URL, SafeLinks)", "2"))
+    #print(options.format("OPTION 3: Reputation Checker", "3"))
+    #print(options.format("OPTION 4: DNS Tools", "4"))
+    #print(options.format("OPTION 5: Hashing Function", "5"))
+    #print(options.format("OPTION 6: Phishing Analysis", "6"))
+    #print(options.format("OPTION 7: URL scan", "7"))
+    #print(options.format("OPTION 9: Extras", "9"))
+    #print(options.format("OPTION 0: Exit Tool", "0"))
+    #print(border)
+    #switchMenu(input())
 
 
 def urlSanitise():
@@ -458,9 +492,11 @@ def unfurlUrl():
     decoderMenu()
 
 def repChecker():
-    print("\n --------------------------------- ")
-    print(" R E P U T A T I O N     C H E C K ")
-    print(" --------------------------------- ")
+    from rich.console import Console
+    from rich.table import Table
+    console = Console()
+
+    console.rule("[bold blue]Reputation Checker:[/bold blue]")
     # Prompt the user to enter an input string
     input_str = input("Enter an IP address, URL, or email address: ")
     # Define regular expressions for detecting IP addresses, URLs, and email addresses
@@ -474,6 +510,59 @@ def repChecker():
         print("Detected input type:", input_str)
         try:
             whoIsPrint(input_str)
+
+            console = Console()
+
+            console.rule("[bold blue]VirusTotal Report:[/bold blue]")
+
+            url = 'https://www.virustotal.com/vtapi/v2/ip-address/report'
+            params = {'apikey':configvars.data['VT_API_KEY'],'ip':input_str}
+            response = requests.get(url, params=params)
+
+            if response.status_code == 200:
+                report = response.json()
+                if report["response_code"] == 1:
+                    detected_urls = report.get("detected_urls", [])
+                    if not detected_urls:
+                        console.print(f"{input_str} has not been reported for malicious activity.")
+                    else:
+                        console.print(f"{input_str} has been reported for malicious activity by [bold red]{len(detected_urls)}[/bold red] sources.")
+                        table = Table(show_header=True, header_style="bold magenta")
+                        table.add_column("URL")
+                        table.add_column("Positives")
+                        table.add_column("Total")
+                        for url in detected_urls:
+                            table.add_row(url['url'], str(url['positives']), str(url['total']))
+                        console.print(table)
+                    table = Table(show_header=True, header_style="bold magenta")
+                    table.add_column("Field")
+                    table.add_column("Value")
+                    for field, value in report.items():
+                        table.add_row(str(field), str(value))
+                    console.print(table)
+                else:
+                    console.print(f"Error: {report['verbose_msg']}")
+            else:
+                console.print(f"Error: {response.status_code} {response.reason}")
+
+            console.rule("[bold blue]Tor Node Check:[/bold blue]")
+
+            try:
+                url = f"https://check.torproject.org/cgi-bin/TorBulkExitList.py?ip={input_str}"
+                try:
+                    response = requests.get(url, timeout=5)
+                    if response.status_code == 200 and input_str in response.text:
+                        console.print(f"[bold green]{input_str} is a Tor node.[/bold green]")
+                    else:
+                        console.print(f"[bold red]{input_str} is not a Tor node.[/bold red]")
+                except requests.exceptions.RequestException as e:
+                    console.print(f"An error occurred: {e}")
+            except Exception as e:
+                console.print("There is an error with checking for Tor exit nodes:\n" + str(e))
+
+
+
+
         except ValueError:
             print("Invalid IP address format.")
         except KeyError:
@@ -484,53 +573,51 @@ def repChecker():
 
 
 #        whoIsPrint(ipw)
-#        wIP = socket.gethostbyname(ipw)
-#        now = datetime.now()
-#        today = now.strftime("%m-%d-%Y")#
+        wIP = socket.gethostbyname(input_str)
+        now = datetime.now()
+        today = now.strftime("%m-%d-%Y")#
 
-#        if not os.path.exists('output/'+today):
-#            os.makedirs('output/'+today)
-#        f= open('output/'+today+'/'+str(ipw) + ".txt","a+")#
+        if not os.path.exists('output/'+today):
+            os.makedirs('output/'+today)
+        f= open('output/'+today+'/'+str(input_str) + ".txt","a+")#
 
-#        print("\n VirusTotal Report:")
-#        f.write("\n --------------------------------- ")
-#        f.write("\n VirusTotal Report:")
-#        f.write("\n --------------------------------- \n")#
-
-#        url = 'https://www.virustotal.com/vtapi/v2/ip-address/report'
-#        #params = {'apikey': configvars.data['VT_API_KEY'], 'resource': wIP}
-#        params = {'apikey':configvars.data['VT_API_KEY'],'ip':ipw}
-#        response = requests.get(url, params=params)
-#        if response.status_code == 200:
-#            report = response.json()
-#            if report["response_code"] == 1:
-#                detected_urls = report.get("detected_urls", [])
-#                if not detected_urls:
-#                    print(f"{ipw} has not been reported for malicious activity.")
-#                else:
-#                    print(f"{ipw} has been reported for malicious activity by {len(detected_urls)} sources.")
-#                    for url in detected_urls:
-#                        print(f"{url['url']} - {url['positives']}/{url['total']} antivirus programs detected this threat.")
-#                pretty_report = json.dumps(report, indent=4)
-#                print(pretty_report)
-#                f.write(pretty_report)          
-#            else:
-#                print(f"Error: {report['verbose_msg']}")
-#        else:
-#            print(f"Error: {response.status_code} {response.reason}")#
-
-#        try:
-#            url = f"https://check.torproject.org/cgi-bin/TorBulkExitList.py?ip={ipw}"
-#            try:
-#                response = requests.get(url, timeout=5)
-#                if response.status_code == 200 and ipw in response.text:
-#                    print(f"{ipw} is a Tor node.")
-#                else:
-#                    print(f"{ipw} is not a Tor node.")
-#            except requests.exceptions.RequestException as e:
-#                print(f"An error occurred: {e}")
-#        except Exception as e:
-#            print("There is an error with checking for Tor exit nodes:\n" + str(e))#
+        print("\n VirusTotal Report:")
+        f.write("\n --------------------------------- ")
+        f.write("\n VirusTotal Report:")
+        f.write("\n --------------------------------- \n")#
+        url = 'https://www.virustotal.com/vtapi/v2/ip-address/report'
+        #params = {'apikey': configvars.data['VT_API_KEY'], 'resource': wIP}
+        params = {'apikey':configvars.data['VT_API_KEY'],'ip':ipw}
+        response = requests.get(url, params=params)
+        if response.status_code == 200:
+            report = response.json()
+            if report["response_code"] == 1:
+                detected_urls = report.get("detected_urls", [])
+                if not detected_urls:
+                    print(f"{ipw} has not been reported for malicious activity.")
+                else:
+                    print(f"{ipw} has been reported for malicious activity by {len(detected_urls)} sources.")
+                    for url in detected_urls:
+                        print(f"{url['url']} - {url['positives']}/{url['total']} antivirus programs detected this threat.")
+                pretty_report = json.dumps(report, indent=4)
+                print(pretty_report)
+                f.write(pretty_report)          
+            else:
+                print(f"Error: {report['verbose_msg']}")
+        else:
+            print(f"Error: {response.status_code} {response.reason}")#
+        try:
+            url = f"https://check.torproject.org/cgi-bin/TorBulkExitList.py?ip={ipw}"
+            try:
+                response = requests.get(url, timeout=5)
+                if response.status_code == 200 and ipw in response.text:
+                    print(f"{ipw} is a Tor node.")
+                else:
+                    print(f"{ipw} is not a Tor node.")
+            except requests.exceptions.RequestException as e:
+                print(f"An error occurred: {e}")
+        except Exception as e:
+            print("There is an error with checking for Tor exit nodes:\n" + str(e))#
 
 #        print("\n ABUSEIPDB Report:")
 #        f.write("\n\n ---------------------------------")
@@ -631,49 +718,36 @@ def whoIs():
 
 def whoIsPrint(ip):
     try:
+        from rich.console import Console
+        from rich.table import Table
+        from ipwhois import IPWhois
+
+        console = Console()
+
         w = IPWhois(ip)
         w = w.lookup_whois()
-        pprint(w)
-        addr = str(w['nets'][0]['address']).replace('\n', ', ')
-        abuse_email = w['nets'][0]['emails'][0]
 
-        # Define table rows as tuples of field names and values
-        rows = [
-            ("CIDR", w['nets'][0]['cidr']),
-            ("Name", w['nets'][0]['name']),
-            ("Handle", w['nets'][0]['handle']),
-            ("Range", w['nets'][0]['range']),
-            ("Descr", w['nets'][0]['description']),
-            ("Country", w['nets'][0]['country']),
-            ("State", w['nets'][0]['state']),
-            ("City", w['nets'][0]['city']),
-            ("Address", addr),
-            ("Post Code", w['nets'][0]['postal_code']),
-            ("Emails", ', '.join(w['nets'][0]['emails'])),
-            ("Created", w['nets'][0]['created']),
-            ("Updated", w['nets'][0]['updated']),
-            ("Abuse Email", abuse_email)
-#            ("Alt Descr", w['nets'][1]['description']),
-#            ("Alt Address", str(w['nets'][1]['address'])),
-#            ("Alt Emails", ', '.join(w['nets'][1]['emails'])),
-#            ("Alt Updated", w['nets'][1]['updated'])
-        ]
+        table = Table(show_header=True, header_style="bold magenta")
+        table.add_column("Field", style="dim")
+        table.add_column("Value")
 
-        # Determine maximum length for field names and values
-        max_name_len = max(len(name) for name, _ in rows)
-        max_value_len = max(len(str(value)) for _, value in rows)
+        table.add_row("CIDR", w["nets"][0]["cidr"])
+        table.add_row("Name", w["nets"][0]["name"])
+        table.add_row("Handle", w["nets"][0]["handle"])
+        table.add_row("Range", w["nets"][0]["range"])
+        table.add_row("Descr", w["nets"][0]["description"])
+        table.add_row("Country", w["nets"][0]["country"])
+        table.add_row("State", w["nets"][0]["state"])
+        table.add_row("City", w["nets"][0]["city"])
+        table.add_row("Address", str(w["nets"][0]["address"]).replace("\n", ", "))
+        table.add_row("Post Code", w["nets"][0]["postal_code"])
+        table.add_row("Emails", ", ".join(w["nets"][0]["emails"]))
+        table.add_row("Created", w["nets"][0]["created"])
+        table.add_row("Updated", w["nets"][0]["updated"])
+        table.add_row("Abuse Email", w["nets"][0]["emails"][0])
 
-        # Print table header
-        print(f"+{'-' * (max_name_len + 2)}+{'-' * (max_value_len + 2)}+")
-        print(f"| {'Field':<{max_name_len}} | {'Value':<{max_value_len}} |")
-        print(f"+{'-' * (max_name_len + 2)}+{'-' * (max_value_len + 2)}+")
-
-        # Print table rows
-        for name, value in rows:
-            print(f"| {name:<{max_name_len}} | {str(value):<{max_value_len}} |")
-
-        # Print table footer
-        print(f"+{'-' * (max_name_len + 2)}+{'-' * (max_value_len + 2)}+")
+        console.print("\n[bold magenta]WHOIS REPORT:[/bold magenta]\n")
+        console.print(table)
 
         now = datetime.now() # current date and time
         today = now.strftime("%m-%d-%Y")
@@ -834,8 +908,8 @@ def analyzePhish():
         os.rename(file, file2)
         outlook = win32com.client.Dispatch("Outlook.Application").GetNamespace("MAPI")
         msg = outlook.OpenSharedItem(file)
-    except:
-        print(' Error Opening File')
+    except Exception as e:
+        print(' Error Opening File',e)
 
     print("\n Extracting Headers...")
     try:
@@ -1296,22 +1370,11 @@ def extrasMenu():
 
 
 def aboutSooty():
-    print(' SOOTY is a tool developed and targeted to help automate some tasks that SOC Analysts perform.')
+    print(' Socterminal is a tool developed and targeted to help automate some tasks that SOC Analysts perform.')
     extrasMenu()
 
 def contributors():
     print(' CONTRIBUTORS')
-    print(" Aaron J Copley for his code to decode ProofPoint URL's")
-    print(" James Duarte for adding a hash and auto-check option to the hashing function ")
-    print(" mrpnkt for adding the missing whois requirement to requirements.txt")
-    print(" Gurulhu for adding the Base64 Decoder to the Decoders menu.")
-    print(" AndThenEnteredAlex for adding the URLScan Function from URLScan.io")
-    print(" Eric Kelson for fixing pywin32 requirement not necessary on Linux systems in requirements.txt.")
-    print(" Jenetiks for removing and tidying up duplicate imports that had accumulated over time.")
-    print(" Nikosch86 for fixing an issue with Hexdigest not storing hashes correctly")
-    print(" Naveci for numerous bug fixes, QoL improvements, and Cisco Password 7 Decoding, and introduced a workflow to helps with issues in future. Phishtank support has now also been added.")
-    print(" Paralax for fixing typos in the readme")
-    print(" MrMeeseeks2014 fox fixing a bug relating to hash uploads")
 
     extrasMenu()
 
@@ -1321,12 +1384,12 @@ def extrasVersion():
 
 def wikiLink():
     print('\n The Sooty Wiki can be found at the following link:')
-    print(' https://github.com/TheresAFewConors/Sooty/wiki')
+    print(' https://github.com/akshay-nehate/Sooty/wiki')
     extrasMenu()
 
 def ghLink():
     print('\n The Sooty Repo can be found at the following link:')
-    print(' https://github.com/TheresAFewConors/Sooty')
+    print(' https://github.com/akshay-nehate/Sooty')
     extrasMenu()
 
 if __name__ == '__main__':
