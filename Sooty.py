@@ -52,7 +52,7 @@ import requests
 
 def get_sooty_version():
     # Download the file from GitHub
-    url = 'https://raw.githubusercontent.com/TheresAFewConors/Sooty/master/Sooty.py'
+    url = 'https://github.com/akshay-nehate/Socterminal/blob/main/Sooty.py'
     response = requests.get(url)
     code = response.text
 
