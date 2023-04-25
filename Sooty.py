@@ -43,7 +43,36 @@ try:
 except:
     print('Cant install Win32com package')
 
-versionNo = '0.1.1'
+currentVersionNo = '0.1.1'
+
+import urllib.request
+
+import re
+import requests
+
+def get_sooty_version():
+    # Download the file from GitHub
+    url = 'https://raw.githubusercontent.com/TheresAFewConors/Sooty/master/Sooty.py'
+    response = requests.get(url)
+    code = response.text
+
+    # Extract the value of the versionNo variable
+    version_regex = r"versionNo\s*=\s*'([^']*)'"
+    match = re.search(version_regex, code)
+
+    if match:
+        return match.group(1)
+    else:
+        return None
+
+version = get_sooty_version()
+if version == currentVersionNo:
+    print("Current Version is Upto-Date")
+else:
+    print("New Version is Available")
+print(version)
+print(currentVersionNo)
+
 
 try:
     f = open("config.yaml", "r")
@@ -234,128 +263,125 @@ def mainMenu():
     # Pass User Input
     switchMenu(item_num)
 
-    #border = "+" + "-"*46 + "+"
-    #title = "|{:^46}|".format("S  O  C - T  E R M I N A L")
-    #options = "|{:<44} {:>2}|"
-    #print("\n" + border)
-    #print(title)
-    #print(border)
-    #print(options.format("OPTION 1: Sanitise URL For emails", "1"))
-    #print(options.format("OPTION 2: Decoders (PP, URL, SafeLinks)", "2"))
-    #print(options.format("OPTION 3: Reputation Checker", "3"))
-    #print(options.format("OPTION 4: DNS Tools", "4"))
-    #print(options.format("OPTION 5: Hashing Function", "5"))
-    #print(options.format("OPTION 6: Phishing Analysis", "6"))
-    #print(options.format("OPTION 7: URL scan", "7"))
-    #print(options.format("OPTION 9: Extras", "9"))
-    #print(options.format("OPTION 0: Exit Tool", "0"))
-    #print(border)
-    #switchMenu(input())
-
+from rich.console import Console
+from rich.table import Table
 
 def urlSanitise():
-    print("\n" + "="*80)
-    print("|{:^78}|".format("U R L   S A N I T I S E   T O O L"))
-    print("|" + "-"*78 + "|")
-    urls = str(input("|{:<8}|".format("Enter comma seprated URL,Emails OR IPs to sanitize: ")).strip()).split(',')
-    print("|" + "="*78 + "|")
+    console = Console()
+    console.rule("[bold blue]URL Sanitization Tool:[/bold blue]")
+    table = Table(title="URL Sanitization Tool")
+    
+    table.add_column("Input", justify="left", style="cyan")
+    table.add_column("Sanitized", justify="left", style="green")
+
+    urls = str(input("Enter comma separated URLs, emails or IPs to sanitize: ")).split(',')
     for url in urls:
-        x = re.sub(r"\.", "[.]", url)
-        x = re.sub("http://", "hxxp://", x)
-        x = re.sub("https://", "hxxps://", x)
-        input_str = "Input URL: " + url
-        output_str = "Sanitized : " + x
-        max_str_len = max(len(input_str), len(output_str))
-        input_str = "|{:<78}|".format(input_str.ljust(max_str_len, " "))
-        output_str = "|{:<78}|".format(output_str.ljust(max_str_len, " "))
-        print(output_str)
-        print("|" + "="*78 + "|\n")
+        x = url.replace(".", "[.]").replace("http://", "hxxp://").replace("https://", "hxxps://")
+        table.add_row(url, x)
+
+    console.print(table)
+
+    # Press any key to exit
     press_any_key()
 
+
+import re
+from rich.console import Console
+from rich.table import Table
+
 def urlDeSanitise():
-    print("\n" + "="*80)
-    print("|{:^78}|".format("U R L   S A N I T I S E   T O O L"))
-    print("|" + "-"*78 + "|")
-    urls = str(input("|{:<8}|".format("Enter comma seprated URL,Emails OR IPs to DEsanitize: ")).strip()).split(',')
-    print("|" + "="*78 + "|")
+    console = Console()
+    console.rule("[bold blue]URL DE-Sanitization Tool:[/bold blue]")
+    table = Table(title="U R L   S A N I T I S E   T O O L", show_header=True, header_style="bold magenta")
+    table.add_column("Input URL", style="cyan")
+    table.add_column("DeFanged", style="green")
+
+    urls = str(input("Enter comma separated URL,Emails OR IPs to DEsanitize: ")).strip().split(',')
     for url in urls:
         x = re.sub(r"\[\.\]", ".", url)
         x = re.sub("hxxp://", "http://", x)
         x = re.sub("hxxps://", "https://", x)
-        input_str = "Input URL: " + url
-        output_str = "DeFanged : " + x
-        max_str_len = max(len(input_str), len(output_str))
-        input_str = "|{:<78}|".format(input_str.ljust(max_str_len, " "))
-        output_str = "|{:<78}|".format(output_str.ljust(max_str_len, " "))
-        print(output_str)
-        print("|" + "="*78 + "|\n")
+        table.add_row(url, x)
+
+    console.print(table)
     press_any_key()
 
+from rich.console import Console
+from rich.table import Table
+
 def FangDefangMenu():
-    print("+{:-<78}+".format(""))
-    print("|{:^78}|".format("U R L   F A N G - D E F A N G   M E N U"))
-    print("|{:-<78}|".format(""))
-    print("|{:^78}|".format("What would you like to do?"))
-    print("|{:<78}|".format(""))
-    print("|{:<78}|".format("OPTION 1: DEFANG URL"))
-    print("|{:<78}|".format("OPTION 2: FANG URL"))
-    print("|{:<78}|".format("OPTION 0: Exit to Main Menu"))
-    print("+{:-<78}+".format(""))
+    console = Console()
+    console.rule("[bold blue]URL Fang-Defang Menu:[/bold blue]")
+    table = Table(title="URL Fang-Defang Menu")
+    table.add_column("Option", justify="left", style="cyan")
+    table.add_column("Description", justify="left", style="magenta")
+    table.add_row("1", "Defang URL (remove special characters)")
+    table.add_row("2", "Fang URL (add special characters)")
+    table.add_row("0", "Exit to Main Menu")
+
+    console.print(table)
+
     FangDefangSwitch(input())
 
 
+from rich.console import Console
+from rich.table import Table
+
 def decoderMenu():
-    print("+---------------------------------+")
-    print("|          D E C O D E R S        |")
-    print("+---------------------------------+")
-    print("| What would you like to do?      |")
-    print("| 1: ProofPoint Decoder           |")
-    print("| 2: URL Decoder                  |")
-    print("| 3: Office SafeLinks Decoder     |")
-    print("| 4: URL unShortener              |")
-    print("| 5: Base64 Decoder               |")
-    print("| 6: Cisco Password 7 Decoder     |")
-    print("| 7: Unfurl URL                   |")
-    print("| 0: Exit to Main Menu            |")
-    print("+---------------------------------+")
+    console = Console()
+    table = Table(show_header=True, header_style="bold magenta")
+    table.add_column("Options")
+    table.add_column("D E C O D E R S")
+    table.add_row("1", "ProofPoint Decoder")
+    table.add_row("2", "URL Decoder")
+    table.add_row("3", "Office SafeLinks Decoder")
+    table.add_row("4", "URL unShortener")
+    table.add_row("5", "Base64 Decoder")
+    table.add_row("6", "Cisco Password 7 Decoder")
+    table.add_row("7", "Unfurl URL")
+    table.add_row("0", "Exit to Main Menu")
+    console.print(table)
     decoderSwitch(input())
 
 
 def proofPointDecoder():
-    print("\n ---------------------------------- ")
-    print(" P R O O F P O I N T - D E C O D E R ")
-    print(" ------------------------------------ ")
-    rewrittenurl = str(input(" Enter ProofPoint Link(no []): ").strip())
+    import re
+    from rich.console import Console
+    from rich.table import Table
+
+    console = Console()
+
+    table = Table(title="ProofPoint Decoder")
+    rewrittenurl = str(input("Enter ProofPoint Link (no []): ").strip())
     match = re.search(r'https://urldefense.proofpoint.com/(v[0-9])/', rewrittenurl)
     matchv3 = re.search(r'urldefense.com/(v3)/', rewrittenurl)
+
     if match:
         if match.group(1) == 'v1':
             decodev1(rewrittenurl)
+            table.add_column("Decoded Link")
             for each in linksFoundList:
-                #print(" --------------------------------- ")
-                print(' Decoded Link: %s' % each)
-                print(" ----------------------------------- ")
+                table.add_row(each)
                 linksFoundList.clear()
         elif match.group(1) == 'v2':
             decodev2(rewrittenurl)
+            table.add_column("Decoded Link")
             for each in linksFoundList:
-                #print(" --------------------------------- ")
-                print('\n Decoded Link: %s' % each)
-                print(" ----------------------------------- ")
+                table.add_row(each)
                 linksFoundList.clear()
 
     if matchv3 is not None:
         if matchv3.group(1) == 'v3':
             decodev3(rewrittenurl)
+            table.add_column("Decoded Link")
             for each in linksFoundList:
-                #print(" --------------------------------- ")
-                print('\n Decoded Link: %s' % each)
-                print(" ----------------------------------- ")
+                table.add_row(each)
                 linksFoundList.clear()
         else:
-            print(' No valid URL found in input: ', rewrittenurl)
+            console.print("No valid URL found in input:", rewrittenurl)
 
-    mainMenu()
+    console.print(table)
+    press_any_key()
     
 def urlDecoder():
     print("\n --------------------------------- ")
