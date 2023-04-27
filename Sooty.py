@@ -43,36 +43,7 @@ try:
 except:
     print('Cant install Win32com package')
 
-currentVersionNo = '0.1.1'
-
-import urllib.request
-
-import re
-import requests
-
-def get_sooty_version():
-    # Download the file from GitHub
-    url = 'https://github.com/akshay-nehate/Socterminal/blob/main/Sooty.py'
-    response = requests.get(url)
-    code = response.text
-
-    # Extract the value of the versionNo variable
-    version_regex = r"versionNo\s*=\s*'([^']*)'"
-    match = re.search(version_regex, code)
-
-    if match:
-        return match.group(1)
-    else:
-        return None
-
-version = get_sooty_version()
-if version == currentVersionNo:
-    print("Current Version is Upto-Date")
-else:
-    print("New Version is Available")
-print(version)
-print(currentVersionNo)
-
+versionNo = '0.1.1'
 
 try:
     f = open("config.yaml", "r")
@@ -265,21 +236,30 @@ def mainMenu():
 
 from rich.console import Console
 from rich.table import Table
+import pyperclip
 
 def urlSanitise():
     console = Console()
     console.rule("[bold blue]URL Sanitization Tool:[/bold blue]")
-    table = Table(title="URL Sanitization Tool")
+    table = Table()
     
+    table.add_column("#", justify="left", style="cyan")
     table.add_column("Input", justify="left", style="cyan")
+    table.add_column("#", justify="left", style="green")
     table.add_column("Sanitized", justify="left", style="green")
 
-    urls = str(input("Enter comma separated URLs, emails or IPs to sanitize: ")).split(',')
-    for url in urls:
-        x = url.replace(".", "[.]").replace("http://", "hxxp://").replace("https://", "hxxps://")
-        table.add_row(url, x)
+    urls = str(input("Enter comma separated URLs, emails or IPs to sanitize: ")).replace(" ", "").split(',')
+    for i, url in enumerate(urls):
+        x = url.replace(".", "[.]").replace("http://", "hxxp://").replace("https://", "hxxps://").replace(" ", "")
+        table.add_row(str(i+1), url, str(i+1), x)
 
     console.print(table)
+
+    # Copy sanitized URLs and numbering to clipboard
+    sanitized_urls = [f"{num}. {url.strip()}" for num, url in zip(table.columns[0].cells, table.columns[3].cells)]
+    sanitized_urls_str = "\n".join(sanitized_urls)
+    pyperclip.copy(sanitized_urls_str)
+    console.print("\nDe-Sanitized URLs and numbering copied to clipboard.", style="yellow")
 
     # Press any key to exit
     press_any_key()
@@ -291,19 +271,31 @@ from rich.table import Table
 
 def urlDeSanitise():
     console = Console()
-    console.rule("[bold blue]URL DE-Sanitization Tool:[/bold blue]")
-    table = Table(title="U R L   S A N I T I S E   T O O L", show_header=True, header_style="bold magenta")
-    table.add_column("Input URL", style="cyan")
-    table.add_column("DeFanged", style="green")
+    console.rule("[bold blue]URL De-Sanitization Tool:[/bold blue]")
+    table = Table()
+
+    table.add_column("#", justify="right", style="cyan")
+    table.add_column("Input", justify="left", style="cyan")
+    table.add_column("De-Sanitized", justify="left", style="green")
 
     urls = str(input("Enter comma separated URL,Emails OR IPs to DEsanitize: ")).strip().split(',')
+    counter = 1
     for url in urls:
-        x = re.sub(r"\[\.\]", ".", url)
-        x = re.sub("hxxp://", "http://", x)
-        x = re.sub("hxxps://", "https://", x)
-        table.add_row(url, x)
+        x = re.sub(r"\[\.\]", ".", url.strip())
+        x = re.sub("hxxp://", "http://", x.strip())
+        x = re.sub("hxxps://", "https://", x.strip())
+        table.add_row(str(counter), url.strip(), x)
+        counter += 1
 
     console.print(table)
+
+    # Copy sanitized URLs and numbering to clipboard
+    sanitized_urls = [f"{num}. {url.strip()}" for num, url in zip(table.columns[0].cells, table.columns[2].cells)]
+    sanitized_urls_str = "\n".join(sanitized_urls)
+    pyperclip.copy(sanitized_urls_str)
+    console.print("\nDe-Sanitized URLs and numbering copied to clipboard.", style="yellow")
+
+    # Press any key to exit
     press_any_key()
 
 from rich.console import Console
@@ -312,7 +304,7 @@ from rich.table import Table
 def FangDefangMenu():
     console = Console()
     console.rule("[bold blue]URL Fang-Defang Menu:[/bold blue]")
-    table = Table(title="URL Fang-Defang Menu")
+    table = Table()
     table.add_column("Option", justify="left", style="cyan")
     table.add_column("Description", justify="left", style="magenta")
     table.add_row("1", "Defang URL (remove special characters)")
@@ -381,6 +373,8 @@ def proofPointDecoder():
             console.print("No valid URL found in input:", rewrittenurl)
 
     console.print(table)
+
+
     press_any_key()
     
 def urlDecoder():
