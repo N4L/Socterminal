@@ -321,9 +321,10 @@ from rich.table import Table
 
 def decoderMenu():
     console = Console()
+    console.rule("[bold blue] Decoder Menu:[/bold blue]")
     table = Table(show_header=True, header_style="bold magenta")
-    table.add_column("Options")
-    table.add_column("D E C O D E R S")
+    table.add_column("Options", justify="left", style="cyan")
+    table.add_column("D E C O D E R S", justify="left", style="magenta")
     table.add_row("1", "ProofPoint Decoder")
     table.add_row("2", "URL Decoder")
     table.add_row("3", "Office SafeLinks Decoder")
@@ -335,14 +336,14 @@ def decoderMenu():
     console.print(table)
     decoderSwitch(input())
 
-
 def proofPointDecoder():
     import re
     from rich.console import Console
     from rich.table import Table
 
-    console = Console()
 
+    console = Console()
+    console.rule("[bold blue] Proofpoint Decoder :[/bold blue]")
     table = Table(title="ProofPoint Decoder")
     rewrittenurl = str(input("Enter ProofPoint Link (no []): ").strip())
     match = re.search(r'https://urldefense.proofpoint.com/(v[0-9])/', rewrittenurl)
@@ -351,29 +352,36 @@ def proofPointDecoder():
     if match:
         if match.group(1) == 'v1':
             decodev1(rewrittenurl)
-            table.add_column("Decoded Link")
+            table.add_column("Input URL", justify="left", style="cyan")
+            table.add_column("Decoded URL", justify="left", style="green")
             for each in linksFoundList:
-                table.add_row(each)
-                linksFoundList.clear()
+                table.add_row(rewrittenurl[:120], each)
+                #linksFoundList.clear()
         elif match.group(1) == 'v2':
             decodev2(rewrittenurl)
-            table.add_column("Decoded Link")
+            table.add_column("Input URL", justify="left", style="cyan")
+            table.add_column("Decoded URL", justify="left", style="green")
             for each in linksFoundList:
-                table.add_row(each)
-                linksFoundList.clear()
+                table.add_row(rewrittenurl[:120], each)
+                #linksFoundList.clear()
 
     if matchv3 is not None:
         if matchv3.group(1) == 'v3':
             decodev3(rewrittenurl)
-            table.add_column("Decoded Link")
+            table.add_column("Input URL", justify="left", style="cyan")
+            table.add_column("Decoded URL", justify="left", style="green")
             for each in linksFoundList:
-                table.add_row(each)
-                linksFoundList.clear()
+                table.add_row(rewrittenurl[:120], each)
+                #linksFoundList.clear()
         else:
             console.print("No valid URL found in input:", rewrittenurl)
 
     console.print(table)
-
+    # Copy the output URL to clipboard
+    if linksFoundList:
+        output_url = linksFoundList[0]
+        pyperclip.copy(output_url)
+        console.print(f"De-coded URL copied to clipboard", style="yellow")
 
     press_any_key()
     
