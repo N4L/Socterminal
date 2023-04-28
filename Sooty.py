@@ -386,80 +386,169 @@ def proofPointDecoder():
     press_any_key()
     
 def urlDecoder():
-    print("\n --------------------------------- ")
-    print("       U R L   D E C O D E R      ")
-    print(" --------------------------------- ")
+    import urllib.parse
+    from rich.console import Console
+    from rich.table import Table
+
+    console = Console()
+    console.rule("[bold blue] URL Decoder :[/bold blue]")
+    table = Table(title="URL Decoder")
     url = str(input(' Enter URL: ').strip())
     decodedUrl = urllib.parse.unquote(url)
-    print(decodedUrl)
-    mainMenu()
+    pyperclip.copy(decodedUrl)
+
+    table = Table()
+    table.add_column("Input URL", justify="center", style="cyan")
+    table.add_column("Decoded URL", justify="center", style="green")
+    table.add_row(url, decodedUrl)
+
+    console.print(table)
+    console.print("[bold yellow]Decoded URL copied to clipboard![/bold yellow]")
+    press_any_key()
+
+from rich.console import Console
+from rich.table import Table
 
 def safelinksDecoder():
-    print("\n --------------------------------- ")
-    print(" S A F E L I N K S   D E C O D E R  ")
-    print(" --------------------------------- ")
-    url = str(input(' Enter URL: ').strip())
+    console = Console()
+    console.rule("\n[bold magenta]S A F E L I N K S   D E C O D E R[/]\n")
+    url = str(input('Enter URL: ').strip())
     dcUrl = urllib.parse.unquote(url)
     dcUrl = dcUrl.replace('https://nam02.safelinks.protection.outlook.com/?url=', '')
-    print(dcUrl)
-    mainMenu()
+    table = Table()
+    table.add_column("Input URL", justify="left", style="cyan")
+    table.add_column("Decoded URL", justify="left", style="green")
+    table.add_row(url, dcUrl)
+    console.print(table)
+    pyperclip.copy(dcUrl)
+    console.print("[bold yellow]Decoded URL copied to clipboard![/bold yellow]")
+    press_any_key()
+
+
+    import requests
+    import json
+    from prettytable import PrettyTable
 
 def urlscanio():
-    print("\n --------------------------------- ")
-    print("\n        U R L S C A N . I O        ")
-    print("\n --------------------------------- ")
-    url_to_scan = str(input('\nEnter url: ').strip())
+    import requests
+    import json
+    import time
+    from rich.table import Table
+    from rich.console import Console
 
-    try:
-        type_prompt = str(input('\nSet scan visibility to Public? \nType "1" for Public or "2" for Private: '))
-        if type_prompt == '1':
-            scan_type = 'public'
-        else:
-            scan_type = 'private'
-    except:
-        print('Please make a selection again.. ')
+    console = Console()
 
-    headers = {
-        'Content-Type': 'application/json',
-        'API-Key': configvars.data['URLSCAN_IO_KEY'],
+    url = input("Enter URL to scan: ")
+    api_key = configvars.data['URLSCAN_IO_KEY']  # Replace with your urlscan.io API key
+
+    # Build the API request payload
+    data = {
+        "url": url,
+        "public": "off",
     }
 
-    response = requests.post('https://urlscan.io/api/v1/scan/', headers=headers, data='{"url": "%s", "%s": "on"}' % (url_to_scan, scan_type)).json()
+    headers = {
+        "Content-Type": "application/json",
+        "API-Key": api_key,
+    }
 
-    try:
-        if 'successful' in response['message']:
-            print('\nNow scanning %s. Check back in around 1 minute.' % url_to_scan)
-            uuid_variable = str(response['uuid']) # uuid, this is the factor that identifies the scan
-            time.sleep(45) # sleep for 45 seconds. The scan takes awhile, if we try to retrieve the scan too soon, it will return an error.
-            scan_results = requests.get('https://urlscan.io/api/v1/result/%s/' % uuid_variable).json() # retrieving the scan using the uuid for this scan
+    # Send the API request to urlscan.io
+    response = requests.post("https://urlscan.io/api/v1/scan/", data=json.dumps(data), headers=headers)
 
-            task_url = scan_results['task']['url']
-            verdicts_overall_score = scan_results['verdicts']['overall']['score']
-            verdicts_overall_malicious = scan_results['verdicts']['overall']['malicious']
-            task_report_URL = scan_results['task']['reportURL']
+    # Get the UUID of the scan from the API response
+    scan_message = response.json()["message"]
+    scan_uuid = response.json()["uuid"]
+    result_url = response.json()["result"]
+    response_json = response.json()
+    print(response_json)
+    console.print(f"[bold green]URL submitted for scanning. Scan UUID:[/bold green] {scan_uuid}")
 
-            print("\nurlscan.io Report:")
-            print("\nURL: " + task_url)
-            print("\nOverall Verdict: " + str(verdicts_overall_score))
-            print("Malicious: " + str(verdicts_overall_malicious))
-            print("urlscan.io: " + str(scan_results['verdicts']['urlscan']['score']))
-            if scan_results['verdicts']['urlscan']['malicious']:
-                print("Malicious: " + str(scan_results['verdicts']['urlscan']['malicious'])) # True
-            if scan_results['verdicts']['urlscan']['categories']:
-                print("Categories: ")
-            for line in scan_results['verdicts']['urlscan']['categories']:
-                print("\t"+ str(line)) # phishing
-            for line in scan_results['verdicts']['engines']['verdicts']:
-                print(str(line['engine']) + " score: " + str(line['score'])) # googlesafebrowsing
-                print("Categories: ")
-                for item in line['categories']:
-                    print("\t" + item) # social_engineering
-            print("\nSee full report for more details: " + str(task_report_URL))
-            print('')
-        else:
-            print(response['message'])
-    except:
-        print(' Error reaching URLScan.io')
+    # Wait for the scan to complete
+    console.print("[bold]Waiting for scan to complete...[/bold]")
+    time.sleep(30)
+    while True:
+        response = requests.get(f"https://urlscan.io/api/v1/result/{scan_uuid}/")
+        #if response.json()["status"] == "completed":
+        break
+
+    # Get the result summary from the API response
+    result = response.json()["verdicts"]
+    url = result_url
+
+    # Create a table to display the result summary
+    table = Table(title=f"[bold green]Scan result:[/bold green] {result['urlscan']}", show_header=True, header_style="bold magenta")
+    table.add_column("Field", style="dim")
+    table.add_column("Value")
+
+    table.add_row("URL", url)
+    table.add_row("Message", scan_message)
+    table.add_row("Score", str(result['overall']['score']))
+    table.add_row("Category", str(result['overall']['malicious']))
+
+    # Print the table with the result summary
+    console.print(table)
+
+
+
+
+
+
+
+    #print("\n --------------------------------- ")
+    #print("\n        U R L S C A N . I O        ")
+    #print("\n --------------------------------- ")
+    #url_to_scan = str(input('\nEnter url: ').strip())
+#
+    #try:
+    #    type_prompt = str(input('\nSet scan visibility to Public? \nType "1" for Public or "2" for Private: '))
+    #    if type_prompt == '1':
+    #        scan_type = 'public'
+    #    else:
+    #        scan_type = 'private'
+    #except:
+    #    print('Please make a selection again.. ')
+#
+    #headers = {
+    #    'Content-Type': 'application/json',
+    #    'API-Key': configvars.data['URLSCAN_IO_KEY'],
+    #}
+#
+    #response = requests.post('https://urlscan.io/api/v1/scan/', headers=headers, data='{"url": "%s", "%s": "on"}' % (url_to_scan, scan_type)).json()
+#
+    #try:
+    #    if 'successful' in response['message']:
+    #        print('\nNow scanning %s. Check back in around 1 minute.' % url_to_scan)
+    #        uuid_variable = str(response['uuid']) # uuid, this is the factor that identifies the scan
+    #        time.sleep(45) # sleep for 45 seconds. The scan takes awhile, if we try to retrieve the scan too soon, it will return an error.
+    #        scan_results = requests.get('https://urlscan.io/api/v1/result/%s/' % uuid_variable).json() # retrieving the scan using the uuid for this scan
+#
+    #        task_url = scan_results['task']['url']
+    #        verdicts_overall_score = scan_results['verdicts']['overall']['score']
+    #        verdicts_overall_malicious = scan_results['verdicts']['overall']['malicious']
+    #        task_report_URL = scan_results['task']['reportURL']
+#
+    #        print("\nurlscan.io Report:")
+    #        print("\nURL: " + task_url)
+    #        print("\nOverall Verdict: " + str(verdicts_overall_score))
+    #        print("Malicious: " + str(verdicts_overall_malicious))
+    #        print("urlscan.io: " + str(scan_results['verdicts']['urlscan']['score']))
+    #        if scan_results['verdicts']['urlscan']['malicious']:
+    #            print("Malicious: " + str(scan_results['verdicts']['urlscan']['malicious'])) # True
+    #        if scan_results['verdicts']['urlscan']['categories']:
+    #            print("Categories: ")
+    #        for line in scan_results['verdicts']['urlscan']['categories']:
+    #            print("\t"+ str(line)) # phishing
+    #        for line in scan_results['verdicts']['engines']['verdicts']:
+    #            print(str(line['engine']) + " score: " + str(line['score'])) # googlesafebrowsing
+    #            print("Categories: ")
+    #            for item in line['categories']:
+    #                print("\t" + item) # social_engineering
+    #        print("\nSee full report for more details: " + str(task_report_URL))
+    #        print('')
+    #    else:
+    #        print(response['message'])
+    #except:
+    #    print(' Error reaching URLScan.io')
 
 def unshortenUrl():
     print("\n --------------------------------- ")
