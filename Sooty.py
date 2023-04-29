@@ -214,19 +214,19 @@ def mainMenu():
     table.add_column("Menu Item", justify="left")
 
     # Add rows to the table
-    table.add_row("1", "Sanitise URLs")
-    table.add_row("2", "Decoders (PP, URL, SafeLinks)")
-    table.add_row("3", "Reputation Checker")
-    table.add_row("4", "DNS Tools")
-    table.add_row("5", "Hashing Function")
-    table.add_row("6", "Phishing Analysis")
-    table.add_row("7", "URL scan")
-    table.add_row("0", "Exit")
+    table.add_row("1", "Sanitise URLs", style="cyan")
+    table.add_row("2", "Decoders (PP, URL, SafeLinks)", style="cyan")
+    table.add_row("3", "Reputation Checker", style="cyan")
+    table.add_row("4", "DNS Tools", style="cyan")
+    table.add_row("5", "Hashing Function", style="cyan")
+    table.add_row("6", "Phishing Analysis", style="cyan")
+    table.add_row("7", "URL scan", style="cyan")
+    table.add_row("0", "Exit", style="cyan")
 
     # Print the table to the console using the Console class
     console.print(table)
     # Prompt the user to select a menu item
-    item_num = Prompt.ask("Enter the item number of the menu item you want to select: ")
+    item_num = Prompt.ask("Enter the item number of the menu item you want to select ")
 
     # Display the user's selection
     console.print(f"You selected menu item number {item_num}")
@@ -240,7 +240,7 @@ import pyperclip
 
 def urlSanitise():
     console = Console()
-    console.rule("[bold blue]URL Sanitization Tool:[/bold blue]")
+    console.rule("[bold blue]U R L - S A N I T I Z A T I O N - T O O L:[/bold blue]")
     table = Table()
     
     table.add_column("#", justify="left", style="cyan")
@@ -271,7 +271,7 @@ from rich.table import Table
 
 def urlDeSanitise():
     console = Console()
-    console.rule("[bold blue]URL De-Sanitization Tool:[/bold blue]")
+    console.rule("[bold blue]U R L - D E - S A N I T I Z A T I O N - T O O L:[/bold blue]")
     table = Table()
 
     table.add_column("#", justify="right", style="cyan")
@@ -303,7 +303,7 @@ from rich.table import Table
 
 def FangDefangMenu():
     console = Console()
-    console.rule("[bold blue]URL Fang-Defang Menu:[/bold blue]")
+    console.rule("[bold blue] U R L - F A N G - D E F A N G - M E N U :[/bold blue]")
     table = Table()
     table.add_column("Option", justify="left", style="cyan")
     table.add_column("Description", justify="left", style="magenta")
@@ -321,7 +321,7 @@ from rich.table import Table
 
 def decoderMenu():
     console = Console()
-    console.rule("[bold blue] Decoder Menu:[/bold blue]")
+    console.rule("[bold blue] D E C O D E R - M E N U :[/bold blue]")
     table = Table(show_header=True, header_style="bold magenta")
     table.add_column("Options", justify="left", style="cyan")
     table.add_column("D E C O D E R S", justify="left", style="magenta")
@@ -770,28 +770,41 @@ def repChecker():
 #        # Print the detected input type
 #        print("None valid Detected input type:", input_str)]
 
+from rich.console import Console
+from rich.table import Table
+
 def dnsMenu():
-    print("+{:-^38}+".format(""))
-    print("|{:^38}|".format("DNS TOOLS"))
-    print("+{:-^38}+".format(""))
-    print("|{:^38}|".format("What would you like to do?"))
-    print("+{:-^38}+".format(""))
-    print("|{:<38}|".format("1. Reverse DNS Lookup"))
-    print("|{:<38}|".format("2. DNS Lookup"))
-    print("|{:<38}|".format("3. WHOIS Lookup"))
-    print("|{:<38}|".format("0. Exit to Main Menu"))
-    print("+{:-^38}+".format(""))
-    dnsSwitch(input())
+    console = Console()
+    table = Table()
+    console.rule("[bold blue] D N S - T O O L S:[/bold blue]")
+    table.add_column("Options", justify="center", no_wrap=True)
+    table.add_column("Value", justify="left")
+    table.add_row("1", "Reverse DNS Lookup",  style="magenta")
+    table.add_row("2", "DNS Lookup",  style="magenta")
+    table.add_row("3", "WHOIS Lookup",  style="magenta")
+    table.add_row("0", "Exit to Main Menu",  style="magenta")
+    console.print(table)
+    item_num = Prompt.ask("Enter the item number of the menu item you want to select ")
+    dnsSwitch(item_num)
 
 
 
 def reverseDnsLookup():
-    d = str(input(" Enter IP to check: ").strip())
+    console = Console()
+    console.rule("[bold blue] R E V E R S E - D N S - L O O K U P:[/bold blue]")
     try:
-        s = socket.gethostbyaddr(d)
-        print('\n ' + s[0])
-    except:
-        print(" Hostname not found")
+        ip_address = input("Enter an IP address: ")
+        hostname = socket.gethostbyaddr(ip_address)[0]
+    except socket.herror:
+        hostname = "Unknown"
+    table = Table(show_header=True, header_style="bold magenta")
+    table.add_column("IP Address", style="cyan")
+    table.add_column("Hostname", style="yellow")
+    table.add_row(ip_address, hostname)
+    console.print(table)
+    pyperclip.copy(hostname)
+    console.print("Hostname copied to clipboard", style="yellow")
+    press_any_key()
     dnsMenu()
 
 def dnsLookup():
