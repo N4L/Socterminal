@@ -435,9 +435,12 @@ def urlscanio():
     import time
     from rich.table import Table
     from rich.console import Console
+    from tqdm import tqdm
+    import time
+    import webbrowser
 
     console = Console()
-
+    console.rule("\n[bold magenta]U R L S C A N . I O[/]\n")
     url = input("Enter URL to scan: ")
     api_key = configvars.data['URLSCAN_IO_KEY']  # Replace with your urlscan.io API key
 
@@ -454,18 +457,22 @@ def urlscanio():
 
     # Send the API request to urlscan.io
     response = requests.post("https://urlscan.io/api/v1/scan/", data=json.dumps(data), headers=headers)
+    scan_message = response.json()["message"]
+    console.print(f"[bold green] {scan_message} [/bold green] ")
+    scan_visibility = response.json()["visibility"]
 
     # Get the UUID of the scan from the API response
-    scan_message = response.json()["message"]
     scan_uuid = response.json()["uuid"]
     result_url = response.json()["result"]
     response_json = response.json()
-    print(response_json)
-    console.print(f"[bold green]URL submitted for scanning. Scan UUID:[/bold green] {scan_uuid}")
+    #print(response_json) # enable for debugging 
 
     # Wait for the scan to complete
     console.print("[bold]Waiting for scan to complete...[/bold]")
-    time.sleep(30)
+    #time.sleep(30)
+    for i in tqdm(range(100), bar_format="{l_bar}{bar:30}{r_bar}"):
+        time.sleep(0.33)
+    
     while True:
         response = requests.get(f"https://urlscan.io/api/v1/result/{scan_uuid}/")
         #if response.json()["status"] == "completed":
@@ -473,20 +480,36 @@ def urlscanio():
 
     # Get the result summary from the API response
     result = response.json()["verdicts"]
+    #print(result)
     url = result_url
 
     # Create a table to display the result summary
-    table = Table(title=f"[bold green]Scan result:[/bold green] {result['urlscan']}", show_header=True, header_style="bold magenta")
+    table = Table()
     table.add_column("Field", style="dim")
     table.add_column("Value")
 
-    table.add_row("URL", url)
-    table.add_row("Message", scan_message)
-    table.add_row("Score", str(result['overall']['score']))
+    table.add_row("URL", url,style="yellow")
+    table.add_row("Visibility", scan_visibility, style="yellow")
+    table.add_row("Malicious Score", str(result['overall']['score']))
     table.add_row("Category", str(result['overall']['malicious']))
-
+    table.add_row("Tags", str(result['overall']['tags']))
+    table.add_row("Brand", str(result['overall']['brands']))
+    #table.add_row("User-Agent", str(request_scan['headers']['User-Agent']))
+    # Copy results url in clipboard 
+    pyperclip.copy(url)
     # Print the table with the result summary
     console.print(table)
+    # Ask the user if they want to open the URL in a browser
+    while True:
+        response = input("Do you want to open the URL in a browser? (y/n) ")
+        if response.lower() == "y":
+            webbrowser.open(url)
+            break
+        elif response.lower() == "n":
+            break
+        else:
+            console.print("[bold red]Invalid response. Please enter 'y' or 'n'.[/bold red]")  
+    press_any_key()
 
 
 
