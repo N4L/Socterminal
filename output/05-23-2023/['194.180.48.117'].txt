@@ -1,0 +1,12 @@
+
+ ---------------------------------
+ WHO IS REPORT:
+ ---------------------------------
+
+ CIDR:      194.180.48.0/24
+ Name:      SERVERION_BV-NET  Handle:    SB27731-RIPE
+ Range:     194.180.48.0 - 194.180.48.255
+ Descr:     None
+ Country:   NL
+ State:     None
+ City:      None

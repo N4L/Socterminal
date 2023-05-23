@@ -6,7 +6,8 @@
     Version:    0.1.1
     GitHub URL: https://github.com/akshay-nehate/Socterminal
 """
-
+# How-to-Run ---> /c/Users/akshay.nehate_n4l/AppData/Local/Programs/Python/Python37/python.exe Sooty.py
+# Roadmap ----> Use no mouse once you open the tool and auto create report that one can post on incident slack channel.
 import base64
 from unfurl import core
 from prettytable import PrettyTable
