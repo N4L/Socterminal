@@ -882,6 +882,8 @@ def hashMenu():
 
 
 def hashFile():
+    console = Console()
+    console.rule("[bold blue] H A S H I N G - F I L E :[/bold blue]")
     root = tkinter.Tk()
     root.attributes("-topmost", True)  # Bring the window to the front
     root.filename = tkinter.filedialog.askopenfilename(initialdir="/", title="Select file")
@@ -892,7 +894,7 @@ def hashFile():
         hasher.update(buf)
     root.destroy()
 
-    console = Console()
+
     table = Table(show_header=True, header_style="bold magenta")
     table.add_column("File", style="cyan", width=20)
     table.add_column("MD5 Hash", style="magenta")
@@ -907,14 +909,29 @@ def hashFile():
     hashMenu()
 
 def hashText():
-    userinput = input(" Enter the text to be hashed: ")
-    print(" MD5 Hash: " + hashlib.md5(userinput.encode("utf-8")).hexdigest())
-    hashMenu()
+    console = Console()
+    console.rule("[bold blue] H A S H I N G - T E X T  :[/bold blue]")
+    userinput = input("Enter the text to be hashed: ")
+    hashed_text = hashlib.md5(userinput.encode("utf-8")).hexdigest()
 
+    table = Table()
+    table.add_column("Text", style="cyan")
+    table.add_column("MD5 Hash", style="magenta")
+    table.add_row(userinput, hashed_text)
+    console.print(table)
+    pyperclip.copy(hashed_text)
+    console.print("MD5 Hash copied to clipboard", style="yellow")
+    press_any_key()
+    hashMenu()
+from rich.markdown import Markdown
 def hashRating():
     apierror = False
+    console = Console()
+    console.rule("[bold blue] H A S H - R E P O R T  :[/bold blue]")
+    table = Table()
+
     # VT Hash Checker
-    fileHash = str(input(" Enter Hash of file: ").strip())
+    fileHash = str(input("Enter Hash of file: ").strip())
     url = 'https://www.virustotal.com/vtapi/v2/file/report'
 
     params = {'apikey': configvars.data['VT_API_KEY'], 'resource': fileHash}
@@ -924,16 +941,23 @@ def hashRating():
         result = response.json()
     except:
         apierror = True
-        print("Error: Invalid API Key")
+        console.print("Error: Invalid API Key")
+        return
 
-    if not apierror:
-        if result['response_code'] == 0:
-            print("\n Hash was not found in Malware Database")
-        elif result['response_code'] == 1:
-            print(" VirusTotal Report: " + str(result['positives']) + "/" + str(result['total']) + " detections found")
-            print("   Report Link: " + "https://www.virustotal.com/gui/file/" + fileHash + "/detection")
-        else:
-            print("No Reponse")
+    if result['response_code'] == 0:
+        console.print("\n Hash was not found in Malware Database")
+    elif result['response_code'] == 1:
+        table.add_column("Detections", justify="center")
+        table.add_column("Total Scans", justify="center")
+        table.add_row(str(result['positives']), str(result['total']))
+        console.print(table)
+        report_link = "https://www.virustotal.com/gui/file/" + fileHash + "/detection"
+        console.print("Report Link: " + report_link)
+        pyperclip.copy(report_link)
+        console.print("Report link copied to clipboard", style="yellow")
+    else:
+        console.print("No Response")
+    press_any_key()
     hashMenu()
 
 def hashAndFileUpload():
