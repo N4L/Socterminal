@@ -86,8 +86,8 @@ SocTerminal is a tool developed with the task of aiding SOC analysts with automa
 ## Requirements and Installation
  - [Python 3.x](https://www.python.org/)
  - Install all dependencies from the requirements.txt file. `pip install -r requirements.txt`
- - Launch the tool by navigating to the main directory, and executing with `python Sooty.py`, or simply `Sooty.py` 
- - Several API Keys are required to have full functionality with Sooty. However, it will still function without these keys, just without the added functionality they provide. Links are found below:
+ - Launch the tool by navigating to the main directory, and executing with `python Socterminal.py`, or simply `Socterminal.py` 
+ - Several API Keys are required to have full functionality with Socterminal. However, it will still function without these keys, just without the added functionality they provide. Links are found below:
    - [VirusTotal API Key](https://developers.virustotal.com/reference)
    - [URLScan.io API Key](https://urlscan.io/about-api/)
    - [AbuseIPDB API Key](https://www.abuseipdb.com/api)
@@ -100,7 +100,7 @@ SocTerminal is a tool developed with the task of aiding SOC analysts with automa
 ![](readmeimages/example_config.png)
 
 ## Launch with Docker
-- docker build -t sooty . && docker run --rm -it sooty 
+- docker build -t Socterminal . && docker run --rm -it Socterminal 
  
  <!-- - To use the Hash comparison with VirusTotal requires an [API key](https://developers.virustotal.com/reference), replace the key `VT_API_KEY` in the code with your own key. The tool will still function without this key, however this feature will not work.
  - To use the Reputation Checker with AbuseIPDB requires an [API Key](https://www.abuseipdb.com/api), replace the key `AB_API_KEY` in the code with your own key. The tool will still function without this key, however this feature will not work.
