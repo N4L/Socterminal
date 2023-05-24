@@ -758,20 +758,33 @@ def reverseDnsLookup():
     dnsMenu()
 
 def dnsLookup():
-    d = str(input(" Enter Domain Name to check: ").strip())
-    d = re.sub("http://", "", d)
-    d = re.sub("https://", "", d)
+    console = Console()
+    console.rule("[bold blue] D N S - L O O K U P:[/bold blue]")
+    table = Table()
+    table.add_column("Domain Name", style="cyan")
+    table.add_column("IP Address",style="magenta")
+
+    d = input("Enter Domain Name to check: ").strip()
+    d = re.sub("http://|https://", "", d)
+
     try:
-        s = socket.gethostbyname(d)
-        print('\n ' + s)
-    except:
-        print("Website not found")
+        ip_address = socket.gethostbyname(d)
+        table.add_row(d, ip_address)
+    except socket.gaierror:
+        console.print("Website not found", style="bold red")
+    
+    console.print(table)
+    pyperclip.copy(ip_address)
+    console.print("IP Address copied to clipboard", style="yellow")
+    press_any_key()
     dnsMenu()
 
 def whoIs():
-    ip = str(input(' Enter IP / Domain: ').strip())
-    whoIsPrint(ip)
+    console = Console()
 
+    ip = str(input('Enter IP / Domain: ').strip())
+    whoIsPrint(ip)
+    press_any_key()
     dnsMenu()
 
 def whoIsPrint(ip):
@@ -781,11 +794,12 @@ def whoIsPrint(ip):
         from ipwhois import IPWhois
 
         console = Console()
-
+        console.rule("[bold blue] W H O I S - R E P O R T :[/bold blue]")
+        console.print("Generating whois report", style="magenta")
         w = IPWhois(ip)
         w = w.lookup_whois()
 
-        table = Table(show_header=True, header_style="bold magenta")
+        table = Table()
         table.add_column("Field", style="dim")
         table.add_column("Value")
 
@@ -804,9 +818,8 @@ def whoIsPrint(ip):
         table.add_row("Updated", w["nets"][0]["updated"])
         table.add_row("Abuse Email", w["nets"][0]["emails"][0])
 
-        console.print("\n[bold magenta]WHOIS REPORT:[/bold magenta]\n")
+        #console.print("\n[bold magenta]WHOIS REPORT:[/bold magenta]\n")
         console.print(table)
-
         now = datetime.now() # current date and time
         today = now.strftime("%m-%d-%Y")
         if not os.path.exists('output/'+today):
@@ -838,7 +851,7 @@ def whoIsPrint(ip):
         f.close();
         c = 0
     except:
-        print("\n  IP Not Found - Checking Domains")
+        #print("\n  IP Not Found - Checking Domains")
         ip = re.sub('https://', '', ip)
         ip = re.sub('http://', '', ip)
         try:
@@ -848,33 +861,49 @@ def whoIsPrint(ip):
                 c = 1
                 whoIsPrint(s)
         except:
-            print(' IP or Domain not Found')
+            ip = re.sub('https://', '', ip)
     return
 
 def hashMenu():
-    print("+{:-^55}+".format(""))
-    print("|{:^55}|".format("HASHING FUNCTIONS"))
-    print("+{:-^55}+".format(""))
-    print("|{:^55}|".format("What would you like to do?"))
-    print("+{:-^55}+".format(""))
-    print("|{:<55}|".format("1. Hash a file"))
-    print("|{:<55}|".format("2. Input and hash text"))
-    print("|{:<55}|".format("3. Check a hash for known malicious activity"))
-    print("|{:<55}|".format("4. Hash a file, check a hash for malicious activity"))
-    print("|{:<55}|".format("0. Exit to Main Menu"))
-    print("+{:-^55}+".format(""))
-    hashSwitch(input())
+    console = Console()
+    console.rule("[bold blue] H A S H I N G - F U N C T I O N S :[/bold blue]")
+    table = Table()
+    #table.box = console.box.MINIMAL_HEAVY_HEAD
+    table.add_column("Options", style="cyan")
+    table.add_column("Value",style="magenta")
+    table.add_row("1.", "Hash a file")
+    table.add_row("2.", "Input and hash text")
+    table.add_row("3.", "Check a hash for known malicious activity")
+    table.add_row("4.", "Hash a file, check a hash for malicious activity")
+    table.add_row("0.", "Exit to Main Menu")
+
+    console.print(table)
+    hashSwitch(input("Enter Options of the value you want to select :"))
 
 
 def hashFile():
     root = tkinter.Tk()
+    root.attributes("-topmost", True)  # Bring the window to the front
     root.filename = tkinter.filedialog.askopenfilename(initialdir="/", title="Select file")
+    root.attributes("-topmost", False)  # Allow other windows to come to the front
     hasher = hashlib.md5()
     with open(root.filename, 'rb') as afile:
         buf = afile.read()
         hasher.update(buf)
-    print(" MD5 Hash: " + hasher.hexdigest())
     root.destroy()
+
+    console = Console()
+    table = Table(show_header=True, header_style="bold magenta")
+    table.add_column("File", style="cyan", width=20)
+    table.add_column("MD5 Hash", style="magenta")
+
+    table.add_row(root.filename, hasher.hexdigest())
+    console.print(table)
+    # Copy MD5 Hash to clipboard
+    md5_hash = hasher.hexdigest()
+    pyperclip.copy(md5_hash)
+    console.print("MD5 Hash Copied to clipboard", style="yellow")
+    press_any_key()
     hashMenu()
 
 def hashText():
