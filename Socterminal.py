@@ -448,7 +448,7 @@ def urlscanio():
     # Build the API request payload
     data = {
         "url": url,
-        "public": "off",
+        "visibility": "private",
     }
 
     headers = {
@@ -458,9 +458,11 @@ def urlscanio():
 
     # Send the API request to urlscan.io
     response = requests.post("https://urlscan.io/api/v1/scan/", data=json.dumps(data), headers=headers)
+
     scan_message = response.json()["message"]
     console.print(f"[bold green] {scan_message} [/bold green] ")
     scan_visibility = response.json()["visibility"]
+
 
     # Get the UUID of the scan from the API response
     scan_uuid = response.json()["uuid"]
