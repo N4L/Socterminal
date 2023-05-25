@@ -520,7 +520,7 @@ def unshortenUrl():
     from rich.table import Table
 
     console = Console()
-    console.rule("\n[bold magenta] U N S H O R T E N - A N Y - U R L S [/]\n")
+    console.rule("\n[bold magenta] U N S H O R T E N - A N Y - U R L [/]\n")
     link = str(input(' Enter URL: ').strip())
     req = requests.get(str('https://unshorten.me/s/' + link))
 
