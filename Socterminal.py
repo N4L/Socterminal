@@ -308,8 +308,8 @@ def FangDefangMenu():
     table = Table()
     table.add_column("Option", justify="left", style="cyan")
     table.add_column("Description", justify="left", style="magenta")
-    table.add_row("1", "Defang URL (remove special characters)")
-    table.add_row("2", "Fang URL (add special characters)")
+    table.add_row("1", "Fang URL (remove special characters)")
+    table.add_row("2", "De-Fang URL (add special characters)")
     table.add_row("0", "Exit to Main Menu")
 
     console.print(table)
