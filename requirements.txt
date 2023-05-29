@@ -12,7 +12,7 @@ PySocks==1.7.0
 requests==2.22.0
 six==1.12.0
 strictyaml==1.0.6
-urllib3==1.25.9
+urllib3==1.26.5
 win-inet-pton==1.1.0
 wincertstore==0.2
 wget==3.2
@@ -88,7 +88,7 @@ torf==4.0.4
 tqdm==4.65.0
 typing_extensions==4.4.0
 ulid-py==1.1.0
-urllib3==1.25.9
+urllib3==1.26.5
 urlscan-py==1.1.5
 watchdog==3.0.0
 wcwidth==0.2.6
