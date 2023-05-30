@@ -308,8 +308,8 @@ def FangDefangMenu():
     table = Table()
     table.add_column("Option", justify="left", style="cyan")
     table.add_column("Description", justify="left", style="magenta")
-    table.add_row("1", "Fang URL (remove special characters)")
-    table.add_row("2", "De-Fang URL (add special characters)")
+    table.add_row("1", "Defang URL (add special characters)")
+    table.add_row("2", "Fang URL (remove special characters)")
     table.add_row("0", "Exit to Main Menu")
 
     console.print(table)
@@ -574,12 +574,20 @@ def cisco7Decoder():
 
     decoderMenu()
 
+import subprocess
 def unfurlUrl():
-    url_to_unfurl = str(input('Enter URL to Unfurl: ')).strip()
-    unfurl_instance = core.Unfurl()
-    unfurl_instance.add_to_queue(data_type='url', key=None, value=url_to_unfurl)
-    unfurl_instance.parse_queue()
-    print(unfurl_instance.generate_text_tree())
+    input_str = input("Enter a URL")
+    def execute_python_file(file_path, parameter):
+        try:
+            subprocess.run(['python3', file_path, parameter], check=True)
+        except subprocess.CalledProcessError as e:
+            print(f"An error occurred while executing the file: {e}")
+
+    # Example usage
+    file_path = '../Modules/unfurl_cli.py'
+    parameter = input_str
+    execute_python_file(file_path, parameter)
+
 
     decoderMenu()
 
