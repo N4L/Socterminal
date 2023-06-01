@@ -9,7 +9,6 @@
 # How-to-Run ---> /c/Users/akshay.nehate_n4l/AppData/Local/Programs/Python/Python37/python.exe Socterminal.py
 # Roadmap ----> Use no mouse once you open the tool and auto create report that one can post on incident slack channel.
 import base64
-from unfurl import core
 from prettytable import PrettyTable
 import hashlib
 import html.parser
@@ -331,8 +330,8 @@ def decoderMenu():
     table.add_row("3", "Office SafeLinks Decoder")
     table.add_row("4", "URL unShortener")
     table.add_row("5", "Base64 Decoder")
-    table.add_row("6", "Cisco Password 7 Decoder")
-    table.add_row("7", "Unfurl URL")
+    #table.add_row("6", "Cisco Password 7 Decoder")
+    #table.add_row("7", "Unfurl URL")
     table.add_row("0", "Exit to Main Menu")
     console.print(table)
     decoderSwitch(input())
